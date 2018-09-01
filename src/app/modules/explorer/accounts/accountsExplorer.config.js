@@ -9,8 +9,7 @@ function AccountsExplorerConfig($stateProvider) {
             templateUrl: 'modules/explorer/accounts/accountsExplorer.html',
             title: 'Explorer - Accounts',
             params: {
-			    address: "",
-                privateKey: ""
+			    address: ""
 			 }
         });
 

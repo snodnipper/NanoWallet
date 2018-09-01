@@ -1,38 +1,40 @@
-import Sinks from '../../../utils/sinks';
-import helpers from '../../../utils/helpers';
+import nem from 'nem-sdk';
+import Helpers from '../../../utils/helpers';
 
 class ApostilleHistoryCtrl {
-    constructor(Wallet, Alert, $location) {
+
+    /**
+     * Initialize dependencies and properties
+     *
+     * @params {services} - Angular services to inject
+     */
+    constructor(Wallet, Alert, Nty) {
         'ngInject';
 
-        // Wallet service
+        //// Module dependencies region ////
+
         this._Wallet = Wallet;
-        // Alert service
         this._Alert = Alert;
-        // $location to redirect
-        this._location = $location;
+        this._Nty = Nty;
 
-        // If no wallet show alert and redirect to home
-        if (!this._Wallet.current) {
-            this._Alert.noWalletLoaded();
-            this._location.path('/');
-            return;
-        }
+        //// End dependencies region ////
 
-        // Get sink depending of ntwork
-        this.sink = Sinks.sinks.apostille[this._Wallet.network].toUpperCase().replace(/-/g, '');
+        //// Module properties region ////
 
-        // Load nty Data from local storage if any
-        this._Wallet.setNtyData();
+        // Get sink depending of network
+        this.sink = nem.model.sinks.apostille[this._Wallet.network].toUpperCase().replace(/-/g, '');
 
         // User's apostilles pagination properties
         this.currentPage = 0;
         this.pageSize = 5;
-        this.numberOfPages = function() {
-            return Math.ceil(this._Wallet.ntyData !== undefined ? this._Wallet.ntyData.data.length / this.pageSize : 1 / this.pageSize);
-        }
 
+        //// End properties region ////
+
+        // Load nty Data from local storage if any
+        this._Nty.set();
     }
+
+    //// Module methods region ////
 
     /**
      * Trigger file uploading for nty
@@ -45,7 +47,7 @@ class ApostilleHistoryCtrl {
      * Save nty in Wallet service and local storage
      */
     loadNty($fileContent) {
-        this._Wallet.setNtyDataInLocalStorage(JSON.parse($fileContent));
+        this._Nty.setInLocalStorage(JSON.parse($fileContent));
         if (this._Wallet.ntyData !== undefined) {
             this._Alert.ntyFileSuccess();
         }
@@ -57,12 +59,12 @@ class ApostilleHistoryCtrl {
     download() {
         if (this._Wallet.ntyData !== undefined) {
             // Wallet object string to word array
-            let wordArray = CryptoJS.enc.Utf8.parse(JSON.stringify(this._Wallet.ntyData));
+            let wordArray = nem.crypto.js.enc.Utf8.parse(angular.toJson(this._Wallet.ntyData));
             // Word array to base64
-            let base64 = CryptoJS.enc.Base64.stringify(wordArray);
+            let base64 = nem.crypto.js.enc.Base64.stringify(wordArray);
             // Set download element attributes
-            $("#downloadNty").attr('href', 'data:plain/text,' + JSON.stringify(this._Wallet.ntyData));
-            $("#downloadNty").attr('download', "Nty-file-" + helpers.getTimestampShort(helpers.createTimeStamp()) + ".nty");
+            $("#downloadNty").attr('href', 'data:plain/text,' + angular.toJson(this._Wallet.ntyData));
+            $("#downloadNty").attr('download', "Nty-file-" + Helpers.toShortDate(new Date()) + ".nty");
             // Simulate click to trigger download
             document.getElementById("downloadNty").click();
         }
@@ -72,8 +74,10 @@ class ApostilleHistoryCtrl {
      * Purge nty data from local storage
      */
     purge() {
-        return this._Wallet.purgeNtyDataInLocalStorage();
+        return this._Nty.purgeLocalStorage();
     }
+
+    //// End methods region ////
 
 }
 

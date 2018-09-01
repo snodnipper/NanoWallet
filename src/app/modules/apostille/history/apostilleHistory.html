@@ -23,18 +23,7 @@
               <span ng-click="$ctrl.download()"><i class="fa fa-download"></i> {{ 'APOSTILLE_HISTORY_BACKUP' | translate }}</span>
               <span ng-click="$ctrl.purge()"><i class="fa fa-trash"></i> {{ 'APOSTILLE_HISTORY_PURGE' | translate }}</span>
             </div>
-            <div class="nav nav-tabs arrows">
-              <div ng-show="$ctrl._Wallet.ntyData.data.length > 5">
-                <button class="buttonStyle" ng-disabled="$ctrl.currentPage == 0" ng-click="$ctrl.currentPage = $ctrl.currentPage-1">
-                  <span class="fa fa-chevron-left" aria-hidden="true"></span>
-                </button>
-                <b>{{$ctrl.currentPage+1}}/{{$ctrl.numberOfPages()}}</b>
-                <button class="buttonStyle" ng-disabled="$ctrl.currentPage+1 >= $ctrl.numberOfPages()" ng-click="$ctrl.currentPage = $ctrl.currentPage+1">
-                  <span class="fa fa-chevron-right" aria-hidden="true"></span>
-                </button>
-              </div>
-            </div>
-
+            <paginate data="$ctrl._Wallet.ntyData.data" current-page="$ctrl.currentPage" page-size="$ctrl.pageSize"></paginate>
           </div>
         </div>
 
@@ -55,7 +44,7 @@
             <tr ng-repeat="ap in $ctrl._Wallet.ntyData.data | reverse | startFrom:$ctrl.currentPage*$ctrl.pageSize | limitTo:$ctrl.pageSize">
               <td>{{ap.filename}}</td>
               <td>{{ap.tags}}</td>
-              <td ui-sref="app.accountsExplorer({address: ap.dedicatedAccount, privateKey: ap.dedicatedPrivateKey})" style="cursor:pointer"><a>{{ap.dedicatedAccount}}</a></td>
+              <td ui-sref="app.accountsExplorer({address: ap.dedicatedAccount})" style="cursor:pointer"><a>{{ap.dedicatedAccount}}</a></td>
               <td>
                 <span ng-show="!ap.txMultisigHash.length">
                   <a href="{{$ctrl._Wallet.chainLink}}{{ap.txHash}}" target="_blank">
@@ -71,13 +60,13 @@
               <td>{{ap.timeStamp}}</td>
               <td class="row buttans">
                 <div class="col-md-6">
-                  <button class="btn btn-success" type="button" ui-sref="app.updateApostille({address: ap.dedicatedAccount, privateKey: ap.dedicatedPrivateKey, tags: ap.tags})" ng-show="ap.dedicatedAccount !== $ctrl.sink">{{ 'GENERAL_UPDATE' | translate }}</button>
+                  <button class="btn btn-success" type="button" ui-sref="app.createApostille({address: ap.dedicatedAccount, privateKey: ap.dedicatedPrivateKey, tags: ap.tags, isUpdate: true})" ng-show="ap.dedicatedAccount !== $ctrl.sink" ng-disabled="$ctrl._Wallet.algo === 'trezor'">{{ 'GENERAL_UPDATE' | translate }}</button>
                 </div>
                 <div class="col-md-6">
-                  <button class="btn btn-success" type="button" ui-sref="app.apostilleMessage({address: ap.dedicatedAccount})" ng-show="ap.dedicatedAccount !== $ctrl.sink">{{ 'GENERAL_MESSAGE' | translate }}</button>
+                  <button class="btn btn-success" type="button" ui-sref="app.apostilleMessage({address: ap.dedicatedAccount, privateKey: ap.dedicatedPrivateKey})" ng-show="ap.dedicatedAccount !== $ctrl.sink">{{ 'GENERAL_MESSAGE' | translate }}</button>
                 </div>
                 <div class="col-md-12">
-                  <button class="btn btn-success" type="button" ng-show="ap.dedicatedAccount !== $ctrl.sink" ui-sref="app.transferApostille({address: ap.dedicatedAccount, privateKey: ap.dedicatedPrivateKey})">{{ 'APOSTILLE_HISTORY_BTN_TRANSFER' | translate }}</button>
+                  <button class="btn btn-success" type="button" ng-show="ap.dedicatedAccount !== $ctrl.sink" ui-sref="app.createMultisig({address: ap.dedicatedAccount, privateKey: ap.dedicatedPrivateKey})">{{ 'APOSTILLE_HISTORY_BTN_TRANSFER' | translate }}</button>
                 </div>
                 <p class="col-md-12" ng-show="ap.dedicatedAccount === $ctrl.sink">{{ 'GENERAL_NONE' | translate }}</p>
               </td>

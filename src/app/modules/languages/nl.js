@@ -27,6 +27,8 @@ function DutchProvider($translateProvider) {
         HEADER_NODE_CUSTOM_TOOLTIP: 'Vul hier je eigen NIS node in',
         HEADER_PURGE: 'Opschonen',
         HEADER_PURGE_MESSAGE: 'Bevestig het opschonen van de lokale opslag. Door op "OK" te klikken worden alle portemonnees in de lokale opslag verwijderd en kunnen niet worden hersteld. U gaat akkoord dat alle portemonnees zijn gebackupped en uw geld veilig is opgeslagen.',
+        HEADER_OFFLINE_TX: 'Bereid een offline transactie voor',
+        HEADER_RELEASE_TX: 'Offline transactie vrijgeven',
 
         // FOOTER COMPONENT
         FOOTER_POWERED_BY_1: 'Powered by',
@@ -57,6 +59,7 @@ function DutchProvider($translateProvider) {
         DASHBOARD_NOTICE_3: 'Het NEM-team adviseert je om eerst op het Testnet vertrouwd te raken met NanoWallet voordat je het Mainnet gaat gebruiken. Een eenvoudige gids vindt je <a href="https://blog.nem.io/nanowallet-tutorial/" target="_blank"> hier</a>. Gebruikers zijn zelf verantwoordelijk voor hun geld en moeten zelf van de persoonlijke sleutels een back-up maken. Het NEM-team is niet verantwoordelijk voor het verlies van geld door deze applicatie op het Mainnet te gebruiken.',
         DASHBOARD_NOTICE_4: 'Wij raden je aan om persoonlijke sleutels op papier te zetten en op een veilige plaats op te slaan. Daarnaast kun je je accounts importeren in de Android- en iOS-apps als back-up.',
         DASHBOARD_NOTICE_5: 'Bedankt voor het gebruik!',
+        DASHBOARD_MORE_TXES: 'Bekijk meer transacties',
 
         // GENERAL
         GENERAL_BLOCK: 'Blok',
@@ -151,25 +154,37 @@ function DutchProvider($translateProvider) {
         GENERAL_WARNING: 'Waarschuwing',
         GENERAL_SCORE: 'Score',
         GENERAL_LENGTH: 'Lengte',
-        
+        GENERAL_GO_BACK: 'Ga terug',
+        GENERAL_NEXT: 'Volgende',
+        GENERAL_START: 'Start',
+        GENERAL_ALIAS: 'Alias',
+        GENERAL_CONTACTS: 'Contacten',
+        GENERAL_ENCRYPTED: 'Gecodeerd',
+        GENERAL_UNENCRYPTED: 'Ongecodeerd',
+        GENERAL_HEXADECIMAL: 'Hexadecimaal',
+        GENERAL_SELECT_ACCOUNT: 'Selecteer account',
+        GENERAL_INVOICE: 'Factuur',
+        GENERAL_SIGNATURE: 'Handtekening',
+        GENERAL_VERIFY: 'Verifieer',
+
         // HOME MODULE
         HOME_UNSUPPORTED_BROWSER: 'Sorry, je kan Nano Wallet niet veilig gebruiken met deze browser...',
         HOME_RECOMMENDED_BROWSERS: 'Aanbevolen browsers zijn:',
+        HOME_FEATURE_STAND_BY: 'Plaats de cursor op een functie om informatie weer te geven.',
+        HOME_FEATURE_1: 'Verzend en ontvang XEM eenvoudig en bijna onmiddellijk, slechts 1 minuut bloktijd!',
 
         // TRANSFER TRANSACTION MODULE
-        TRANSFER_TRANSACTION_TITLE: 'Verzend & Ontvang',
+        TRANSFER_TRANSACTION_TITLE: 'Verzend een transactie',
         TRANSFER_TRANSACTION_NAME: 'Transactie overdragen',
         TRANSFER_TRANSACTION_MULTISIG_NAME: 'Multi-handtekening transactie overdragen',
         TRANSFER_TRANSACTION_INVOICE: 'Maak een factuur',
-        TRANSFER_TRANSACTION_TAB_INVOICE: 'Ontvang',
+        TRANSFER_TRANSACTION_TAB_INVOICE: 'Factuur',
         TRANSFER_TRANSACTION_MOSAIC_TRANSFER: 'Mozaïek overdragen',
         TRANSFER_TRANSACTION_ATTACH_MOSAIC: 'Mozaïek bijvoegen',
         TRANSFER_TRANSACTION_ATTACH: 'Bijvoegen',
         TRANSFER_TRANSACTION_MOSAICS_ATTACHED: 'Mozaïek bijgevoegd',
         TRANSFER_TRANSACTION_ENCRYPT_MESSAGE: 'Versleutel bericht',
         TRANSFER_TRANSACTION_HEX_MESSAGE: 'Hex bericht',
-        TRANSFER_TRANSACTION_ENCRYPT_TOOLTIP: 'Ontvanger heeft geen openbare sleutel zichtbaar voor het netwerk',
-        TRANSFER_TRANSACTION_ENCRYPT_TOOLTIP_MULTISIG: 'Geen versleutelde berichten via multi-handtekening accounts',
 
         // TRANSACTION LINES
         LINE_TX_DETAILS_FROM: 'Van',
@@ -177,7 +192,6 @@ function DutchProvider($translateProvider) {
         LINE_TX_DETAILS_WAITING: 'Transactie in de wachtrij',
         LINE_TX_DETAILS_NEED_SIG: 'Heeft mede-ondertekenaars nodig',
         LINE_TX_DETAILS_NEED_SIG_2: 'Heeft je handtekening nodig',
-        LINE_TX_DETAILS_MESS_ENC: 'Versleuteld',
         LINE_TX_DETAILS_MESS_DEC: 'Decoderen',
         LINE_TX_DETAILS_HASH: 'Hash',
         LINE_TX_DETAILS_DEC_MESS: 'Decodeer bericht',
@@ -200,7 +214,7 @@ function DutchProvider($translateProvider) {
         LINE_TX_DETAILS_MULTISIG_CREATE: 'Creëer multi-handtekening account',
         LINE_TX_DETAILS_MULTISIG_EDIT: 'Bewerk multi-handtekening account',
         LINE_TX_DETAILS_MULTISIG_MOD: 'Modificaties',
-        LINE_TX_DETAILS_MULTISIG_MIN_COSIG: 'Min Mede-ondertekenaars',
+        LINE_TX_DETAILS_MULTISIG_MIN_COSIG: 'Min. Mede-ondertekenaars',
         LINE_TX_DETAILS_MULTISIG_AFFECTED: 'Account beïnvloed',
 
         // IMPORTANCE MODULE
@@ -274,7 +288,8 @@ function DutchProvider($translateProvider) {
         MOSAIC_DEFINITION_INFORMATION_13: 'Er zijn twee soorten heffing, constante heffing en procentuele heffing.',
         MOSAIC_DEFINITION_INFORMATION_14: 'De heffing wordt opgegeven als constante hoeveelheid en hangt dus niet af van de hoeveelheid die wordt overgedragen.',
         MOSAIC_DEFINITION_INFORMATION_15: 'De heffing wordt opgegeven als percentage van de overgedragen hoeveelheid. De heffing stijgt dus lineair met de overgedragen mozaïekhoeveelheid.',
-        MOSAIC_DEFINITION_INFORMATION_16: 'Het verzenden van mozaïeken op het NEM blockchain vereist een heffing. De exacte heffing wordt berekend afhankelijk van het totale aantal en hoeveel worden verzonden tijdens een transactie. <b>Kleinschalige mozaïeken</b> krijgen een kortingstarief van 0,05 XEM per mozaiek per overdracht. Dit zijn mozaïeken met een hoeveelheid van minder dan 10.000 en een verdeelbaarheid van 0.',
+        MOSAIC_DEFINITION_INFORMATION_16: 'Het verzenden van mozaïeken op het NEM blockchain vereist een heffing. De exacte heffing wordt berekend afhankelijk van het totale aantal en hoeveel worden verzonden tijdens een transactie. <b>Kleinschalige mozaïeken</b> krijgen een kortingstarief van 0.05 XEM per mozaiek per overdracht. Dit zijn mozaïeken met een hoeveelheid van minder dan 10.000 en een verdeelbaarheid van 0.',
+        MOSAIC_DEFINITION_INFORMATION_17: 'Wanneer je 100% van de voorraad bezit, dan kun je alle mozaïek eigenschappen overschrijven door opnieuw een transactie te creëeren en te verzenden met dezelfde naam: "namespace:mosaic".',
 
         // EDIT MOSAIC MODULE
         MOSAIC_SUPPLY_CHANGE_TITLE: 'Verander mozaïekvoorraad',
@@ -309,7 +324,7 @@ function DutchProvider($translateProvider) {
         RENEW_NS_INFORMATION_TITLE_1: 'Kosten',
         RENEW_NS_INFORMATION_TITLE_2: 'Root namespaces',
         RENEW_NS_INFORMATION_TITLE_3: 'Vernieuw periode',
-        RENEW_NS_INFORMATION_1: 'Het vernieuwen van een namespace kost hetzelfde bedrag als het registreren van een nieuwe namespace, 100XEM.',
+        RENEW_NS_INFORMATION_1: 'Het vernieuwen van een namespace kost hetzelfde bedrag als het registreren van een nieuwe namespace, 100 XEM.',
         RENEW_NS_INFORMATION_2: 'Alleen root namespaces moeten worden vernieuwd. Alle sub-namespaces worden automatisch vernieuwd bij vernieuwing van de root namespace.',
         RENEW_NS_INFORMATION_3: 'Namespace-contracten zijn huurcontracten voor een jaar. Het contract kan een maand voor of na de vervaldatum verlengd worden.',
         RENEW_NS_INFORMATION_4: 'Als ze niet op tijd worden vernieuwd, gaan alle sub-namespaces en mozaïeken die erin zijn gemaakt verloren.',
@@ -354,6 +369,8 @@ function DutchProvider($translateProvider) {
         ACCOUNT_CUSTOM_NODE: 'Gebruik aangepaste node',
         ACCOUNT_NODE_FROM_LIST: 'Gebruik node uit de lijstt',
         ACCOUNT_DELEGATED_PRIVATE_KEY: 'Gedelegeerde persoonlijke sleutel',
+        ACCOUNT_NO_PUBLIC_KEY: 'Je moet een transactie maken om een publieke sleutel te krijgen',
+        ACCOUNT_SHOW_ON_TREZOR_BTN: 'Weergeven op TREZOR',
 
         // PORTAL MODULE
         PORTAL_TITLE: 'Diensten',
@@ -367,7 +384,7 @@ function DutchProvider($translateProvider) {
         PORTAL_CHANGELLY_TITLE: 'Changelly Instant Exchange',
         PORTAL_CHANGELLY_TEXT: 'Gebruik de Changelly widget om XEM te kopen tegen de beste tarieven!',
         PORTAL_CHANGELLY_BTN: 'Koop XEM',
-        PORTAL_NS_TITLE: 'Namespaces & Subdomains',
+        PORTAL_NS_TITLE: 'Namespaces & Subdomeinen',
         PORTAL_NS_TEXT: 'Namespaces zijn domeinnamen. Elke domeinnaam is uniek en verifieert mozaïeken (bezittingen) die erop zijn uitgegeven of op de subdomeinen ervan.',
         PORTAL_NS_BTN: 'Creëer namespace',
         PORTAL_MOSAIC_TITLE: 'Mozaïeken',
@@ -377,13 +394,14 @@ function DutchProvider($translateProvider) {
         PORTAL_APOSTILLE_TITLE: 'Apostille',
         PORTAL_APOSTILLE_TEXT: 'Gebruik de NEM Apostille-dienst om blockchain gebaseerde notariële aktes te maken met een tijdstempel en het volgen en controleren van de bestandsechtheid.',
         PORTAL_APOSTILLE_BTN_1: 'Creëer',
-        PORTAL_APOSTILLE_BTN_2: 'Verifieer',
+	PORTAL_APOSTILLE_BTN_2: 'Verifieer',
         PORTAL_ADDRESS_BOOK_TEXT: 'Ken labels toe aan adressen om je contacten gemakkelijk bij te houden.',
         PORTAL_ADDRESS_BOOK_BTN: 'Beheer adressenboek',
-
+        PORTAL_INVOICE_TEXT: 'Creëer een factuur om via QR code te delen',
+ 	PORTAL_SIGNED_MSG_TEXT: 'Creëer en verifieer een ondertekend bericht om het accounteigendom te verifiëren zonder transacties uit te voeren.',
+	    
         // ADDRESS BOOK MODULE
         ADDRESS_BOOK_TITLE: 'Adressenboek',
-        ADDRESS_BOOK_LIST: 'Contacten',
         ADDRESS_BOOK_NAVIGATION: 'Navigatie',
         ADDRESS_BOOK_NEW: 'Nieuw contact',
         ADDRESS_BOOK_EDIT: 'Bewerk contact',
@@ -424,6 +442,10 @@ function DutchProvider($translateProvider) {
         // ACCOUNT EXPLORER
         ACCOUNTS_EXPLORER_TITLE: 'Verkenner - Accounts',
         ACCOUNTS_EXPLORER_SEARCH: 'Zoeken',
+	    
+        // TRANSACTIONS EXPLORER
+        EXPLORER_TRANSACTIONS_TITLE: 'Je transactie geschiedenis',
+        EXPLORER_TRANSACTIONS_LOAD_MORE: 'Laad meer',
 
         // APOSTILLE HISTORY MODULE
         APOSTILLE_HISTORY_TITLE: 'Apostille historie',
@@ -480,8 +502,8 @@ function DutchProvider($translateProvider) {
         //APOSTILLE_AUDIT_NON_SIGNED: 'Non signed example:',
         //APOSTILLE_AUDIT_SIGNED: 'Signed example:',
         APOSTILLE_AUDIT_FILES: 'Verificatie-bestanden',
-        APOSTILLE_AUDIT_FORMAT_EXAMPLE: 'Apostille Format Example',
-        APOSTILLE_AUDIT_REMOVE_RECORDS: 'Remove Records Locally',
+        APOSTILLE_AUDIT_FORMAT_EXAMPLE: 'Apostille voorbeeldformaat',
+        APOSTILLE_AUDIT_REMOVE_RECORDS: 'Verwijder records lokaal',
 
         // APOSTILLE MESSAGE MODULE
         APOSTILLE_MESSAGE_TITLE: 'Zend een bericht naar een notaris account',
@@ -556,14 +578,21 @@ function DutchProvider($translateProvider) {
         ALERT_FETCH_TIME_SYNC_ERROR: 'Er is een fout opgetreden bij het ophalen van netwerktijd!',
         ALERT_MULTISIG_MIN_SIGNATURE: 'Multi-handtekening account heeft ten minste een minimale handtekening nodig',
         ALERT_BTC_MARKET_ERROR: 'Fout bij het proberen om de Bitcoin-prijs op te halen',
-        ALERT_COSIG_REMOVAL_LIMIT: 'Slechts één medeondertekenaar kan op het moment worden verwijderd',
+        ALERT_COSIG_REMOVAL_LIMIT: 'Slechts één mede-ondertekenaar kan op het moment worden verwijderd',
         ALERT_MULTISIG_MIN_SIGNATURE_INVALID: 'Ongeldig aantal minimale handtekeningen',
         ALERT_INSUFFICIENT_BALANCE: 'Onvoldoende saldo voor het uitvoeren van de opdracht',
         ALERT_VOTING_ERROR: 'Ongeldige stem',
         ALERT_BRAIN_PASSWORD_TOO_SHORT: 'Brain wallet wachtwoord moet minimaal 40 karakters lang zijn!',
         ALERT_NODE_SEEMS_OFFLINE: 'Node lijkt offline, selecteer een andere node',
         ALERT_WEAK_PASSPHRASE: 'Beveiligingsscore van het wachtwoord moet minimaal 3 zijn',
-        ALERT_BRAIN_WALLET_UPGRADE: 'Je brein portemonnee is zwak! Alle brein portemonnees moeten een wachtwoord van minimaal 40 karakters hebben.<br> We adviseren je een nieuwe portemonnee aan te maken op de inlogpagina en dan je saldo naar deze protemonnee te verzenden.<br> Meer informatie <a href="https://forum.nem.io/t/2791" target="_blank"><u>hier</u></a>.',
+        ALERT_BRAIN_WALLET_UPGRADE: 'Je brein portemonnee is zwak! Alle brein portemonnees moeten een wachtwoord van minimaal 40 karakters hebben.<br> We adviseren je een nieuwe portemonnee aan te maken op de inlogpagina en dan je saldo naar deze portemonnee te verzenden.<br> Meer informatie <a href="https://forum.nem.io/t/2791" target="_blank"><u>hier</u></a>.',
+        ALERT_RECIPIENT_PUBLIC_KEY: 'Ontvanger heeft geen openbare sleutel zichtbaar voor het netwerk',
+        ALERT_ENCRYPT_MULTISIG: 'Kan geen versleutelde berichten via multi-handtekening accounts verzenden',
+        ALERT_EXCHANGE_NEEDS_MESSAGE: 'De ontvanger is een Exchange en daarom moet er een bericht worden meegestuurd, lees zorgvuldig de instructies van de desbetreffende Exchange!',
+        ALERT_ACCOUNT_ALREADY_IN_ADDRESS_BOOK: 'Het contact bestaat al in het adressenboek!',
+        ALERT_MAX_MOSAIC_SUPPLY: 'Maximale mozaïekvoorraad is 9.000.000.000',
+        ALERT_GET_MOSAIC_SUPPLY_ERROR: 'Fout tijdens ophalen van mozaïekvoorraad, reden: ',
+        ALERT_ENCRYPTED_MSG_OFFLINE: 'Versleutelde berichten is niet geactiveerd in offline transacties',
 
         // SUCCESS ALERTS
         ALERT_CREATE_WALLET_SUCCESS: 'Portemonnee is succesvol aangemaakt en geladen!',
@@ -579,7 +608,9 @@ function DutchProvider($translateProvider) {
         ALERT_ADDRESS_BOOK_FILE_SUCCESS: 'Adresboek succesvol geïmporteerd!',
         ALERT_VOTING_SUCCESS: 'Stem succesvol verzonden',
         ALERT_POLL_CREATION_SUCCESS: 'Poll succesvol aangemaakt',
-
+        ALERT_COPY_SIGNED_TX_SUCCESS: 'Ondertekende transactie gekopieerd!',
+        ALERT_COPY_SIGNED_MSG_SUCCESS: 'Ondertekend bericht gekopieerd!',
+		
         // CONVERT ACCOUNT TO MULTISIG
         AGGREGATE_MODIFICATION_TITLE: 'Een account converteren naar multi-handtekening',
         AGGREGATE_MODIFICATION_NAME: 'Samengevoegde modificatie transactie',
@@ -596,7 +627,6 @@ function DutchProvider($translateProvider) {
         AGGREGATE_MIN_SIGNATURES_PLACEHOLDER: 'Minimale handtekeningen nodig om een transactie te valideren',
         AGGREGATE_MODIFICATION_LIST: 'Wijzigingslijst',
         AGGREGATE_COSIG_LIST: ' Mede-ondertekenaar adreslijst',
-
         AGGREGATE_MODIFICATION_EDIT_TITLE: 'Bewerk een multi-handtekening contract',
         AGGREGATE_MODIFICATION_EDIT_SELECT_TITLE: 'Account om te bewerken',
         AGGREGATE_MODIFICATION_EDIT_SELECT: 'Selecteer een account om te bewerken',
@@ -605,8 +635,10 @@ function DutchProvider($translateProvider) {
         AGGREGATE_MODIFICATION_RELATIVE_CHANGE: 'Wijzig handtekeningen benodigd',
         AGGREGATE_MODIFICATION_RELATIVE_CHANGE_PLACEHOLDER: 'Aantal handtekeningen om (n) toe te voegen of verwijderen (-n) - Geautomatiseerde verwijderingen',
         AGGREGATE_SELECTED_ACCOUNT_INFO: 'Geselecteerde account informatie',
-        AGGREGATE_MIN_SIGNATURES: 'Min handtekeningen',
+        // Declared already AGGREGATE_MIN_SIGNATURES: 'Minimale handtekeningen vereist',
         AGGREGATE_SELECT_WALLET_ACCOUNT: 'Gebruik portemonnee account',
+        AGGREGATE_ADD_COSIG: 'Mede-ondertekenaar toevoegen',
+        AGGREGATE_REMOVE_COSIG: 'Mede-ondertekenaar verwijderen',
 
         // SIGN MULTISIGNATURE TRANSACTIONS
         SIGN_MULTISIG_TRANSACTIONS_TITLE: 'Teken multi-handtekening transacties',
@@ -620,63 +652,98 @@ function DutchProvider($translateProvider) {
         LOGIN_SELECT_WALLET_YOURS: 'Selecteer portemonnee',
         LOGIN_SELECT_WALLET: 'Selecteer een portemonnee...',
         LOGIN_LOGIN_BUTTON: 'Inloggen',
+        LOGIN_NOTE: 'Geen portemonnee? Importeer er één of <a href="#!/signup">Meld je aan</a>.',
 
         // SIGNUP MODULE
         SIGNUP_TITLE: 'Nieuw bij NEM?',
+        SIGNUP_SELECT_WALLET_TYPE: 'Selecteer een type portemonnee die je wilt creëren',
+        SIGNUP_SELECT_WALLET_TYPE_STAND_BY: 'Plaats de cursor op een type portemonnee om informatie te tonen.',  
         SIGNUP_CREATE_WALLET_TITLE: 'Eenvoudige portemonnee',
+        SIGNUP_CREATE_WALLET_INFO: 'Eenvoudige portemonnees bevatten een primaire privésleutel die willekeurig wordt gegenereerd.',
         SIGNUP_PRIVATE_KEY_WALLET_TITLE: 'Persoonlijke sleutel portemonnee',
+        SIGNUP_PRIVATE_KEY_WALLET_INFO: 'Persoonlijke sleutel portemonnees bevatten een primaire persoonlijke sleutel die je wilt importeren.', 
         SIGNUP_BRAIN_WALLET_TITLE: 'Brein portemonnee',
+        SIGNUP_BRAIN_WALLET_INFO: 'Brein portemonnees bevatten een primaire persoonlijke sleutel die is gegenereerd op basis van een wachtwoordzin. Hiermee kun je de portemonnee alleen ophalen door die exacte wachtwoordzin te kennen.',
         SIGNUP_CREATE_WALLET_BUTTON: 'Maak een eenvoudige portemonnee',
         SIGNUP_PRIVATE_KEY_WALLET_BUTTON: 'Maak een persoonlijke sleutel portemonnee',
         SIGNUP_BRAIN_WALLET_BUTTON: 'Maak een brein portemonnee',
         SIGNUP_CREATE_WALLET_WARNING: 'Lees over <a href="https://www.w3.org/TR/2014/WD-WebCryptoAPI-20140325/#RandomSource-interface" rel="nofollow" target="_blank"><b>gevaren</b></a> die door de klant gegenereerde sleutels vormen; Wij zijn niet verantwoordelijk voor enig verlies dat zou kunnen zijn door de entropie van de belangrijkste generatie. Zelfs als het onwaarschijnlijk zal gebeuren, wordt het nog steeds aanbevolen om een persoonlijke sleutel te gebruiken die is gegenereerd vanuit een NEM-client (NCC).',
         SIGNUP_NETWORK_SELECT: 'Selecteer een netwerk',
+        SIGNUP_NETWORK_MAINNET: 'Mainnet is het <b><u>echte</u></b> NEM netwerk. Adressen beginnen met \'N\'.',
+        SIGNUP_NETWORK_TESTNET: 'Testnet is het <b><u>test</u></b> netwerk. Adressen beginnen met \'T\'.',
+        SIGNUP_NETWORK_MIJIN: 'Mijin is de privé versie van NEM. Adressen beginnen met \'M\'.',
         SIGNUP_BRAIN_WALLET_WARNING: 'Lees over <a href="https://en.bitcoin.it/wiki/Brainwallet" rel="nofollow" target="_blank"> gevaren </a> die brein portemonnee vormen. Brein portemonnees gebruikt ALLEEN de wachtwoordzin-hash meerdere keren. Daarom is het van cruciaal belang een VEILIGE wachtwoordzin te selecteren met minstens 40 karakters. <a href="https://xkcd.com/936/" rel="nofollow" target="_blank"> XKCD #936 </a>',
         SIGNUP_PRIVATE_KEY_WALLET_WARNING: 'Persoonlijke sleutel portemonnees gebruiken ALLEEN een wachtwoord om de geïmporteerde persoonlijke sleutel te coderen. Daarom is het van cruciaal belang om een veilig wachtwoord te selecteren.',
+        SIGNUP_CREATE_START_WARNING: 'Volg alstublieft elke stap zorgvuldig!',
+        SIGNUP_CREATE_START_CONNECTION_WARNING: 'Het wordt aanbevolen om de verbinding met internet te verbreken tijdens het maken van uw portemonnee en dan een back-up van uw gegevens te maken.',
+        SIGNUP_CREATE_READY_BTN: 'Klaar',
+        SIGNUP_CREATE_ENTER_NAME: 'Vul een portemonneenaam in',
+        SIGNUP_CREATE_ENTER_PASSWORD: 'Vul een wachtwoord in',
+        SIGNUP_CREATE_ENTER_PASSPHRASE: 'Vul een wachtwoordzin in',
+        SIGNUP_CREATE_CONFIRM_PASSWORD: 'Bevestig bovenstaand wachtwoord',
+        SIGNUP_CREATE_CONFIRM_PASSPHRASE: 'Bevestig bovenstaande wachtwoordzin',
+        SIGNUP_CREATE_ENTER_PRIVATE_KEY: 'Vul een persoonlijke sleutel in',
+        SIGNUP_CREATE_ADDRESS_FROM_PK: 'Adres dat overeenkomt met de bovenstaande sleutel',
+        SIGNUP_CREATE_WALLET_ADD_ENTROPY_INFO: 'We gaan nu je primaire persoonlijke sleutel genereren. <b>Klik op Start en verplaats de cursor rond om meer onwaarschijnlijkheid toe te voegen.</b>',
         SIGNUP_COMMON_WALLET_WARNING_TITLE: 'Waarschuwing voor de veiligheid van het account',
-        SIGNUP_COMMON_WALLET_WARNING_1: 'Portemonnees worden <b>tijdelijk</b> opgeslagen in de lokale opslagruimte van de browser! Browsers kunnen worden geconfigureerd (bijvoorbeeld door add-ons) om de lokale opslag soms af te schaffen. Dit leidt tot verlies van de gegevens en kan niet gemakkelijk worden ongedaan gemaakt. In zo een geval is je portemonnees weg, dus het is heel belangrijk om ervoor te zorgen dat je alle benodigde informatie hebt om je accounts te herstellen.',
+        SIGNUP_COMMON_WALLET_WARNING_1: 'Portemonnees worden <b><u>tijdelijk</u></b> opgeslagen in de lokale opslagruimte van de browser! Browsers kunnen worden geconfigureerd (bijvoorbeeld door add-ons) om de lokale opslag soms af te schaffen. Dit leidt tot verlies van de gegevens en kan niet gemakkelijk worden ongedaan gemaakt. In zo een geval is je portemonnees weg, dus het is heel belangrijk om ervoor te zorgen dat je alle benodigde informatie hebt om je accounts te herstellen.',
         SIGNUP_COMMON_WALLET_WARNING_2: 'Je zou een download moeten hebben geactiveerd nadat je de portemonnee hebt gemaakt. Het is het bestand <b><i>.wlt</i></b> dat als back-up wordt gebruikt en terug te importeren als de lokale opslag van je browser is gewist.',
         SIGNUP_COMMON_WALLET_WARNING_3: 'Als je het bestand <b><i>.wlt</i></b> niet krijgt, klik je op onderstaande knop om de ruwe portemonneegegevens te openen en het bestand handmatig te maken:',
         SIGNUP_COMMON_WALLET_WARNING_4: 'Zelfs als je een portemonnee hebt, is het <b><u>verplicht</u></b> om de persoonlijke sleutel van je account te maken, klik op onderstaande knop om het te onthullen:',
         SIGNUP_COMMON_WALLET_WARNING_5: 'Het is je eigen verantwoordelijkheid om er altijd voor te zorgen dat je van je persoonlijke sleutel een back-up hebt voordat je geld naar je account verzendt.',
-        SIGNUP_COMMON_WALLET_WARNING_6: 'Elke portemonnee heeft een <b><u>primaire private sleutel</u></b> (hierboven wordt weergegeven) die gebruikt wordt om deterministische secundaire accounts te maken (BIP32). Deze functie vereist het gebruik van het <b><u>zelfde wachtwoord</u></b> of het zal verschillende secundaire accounts genereren voor dezelfde primaire persoonlijke sleutel. Wanneer je je gegevens reserveert, vergeet niet je <b><u>wachtwoord op te slaan</u></b>.',
+        SIGNUP_COMMON_WALLET_WARNING_6: 'Elke portemonnee heeft een <b><u>primaire persoonlijke sleutel</u></b> (hierboven wordt weergegeven) die gebruikt wordt om deterministische secundaire accounts te maken (BIP32). Deze functie vereist het gebruik van het <b><u>zelfde wachtwoord</u></b> of het zal verschillende secundaire accounts genereren voor dezelfde primaire persoonlijke sleutel. Wanneer je je gegevens reserveert, vergeet niet je <b><u>wachtwoord op te slaan</u></b>.',
         SIGNUP_COMMON_WALLET_WARNING_BTN_1: 'Toon ruw portemonnee bestand',
-        SIGNUP_COMMON_WALLET_WARNING_BTN_1_INFO: 'Om een portemonneebestand te maken, maak een leeg tekstbestand en zet de bovenstaande BASE64-sleutel erin. <br>Sla het bestand op als <b><i>JePortemonneeNaam.wlt</i></b> en het kan nu geïmporteerd worden.',
+        SIGNUP_COMMON_WALLET_WARNING_BTN_1_INFO: 'Om een portemonneebestand te maken, maak een leeg tekstbestand en zet de bovenstaande BASE64-sleutel erin. Sla het bestand op als <b><i>JePortemonneeNaam.wlt</i></b> en het kan nu geïmporteerd worden.',
         SIGNUP_COMMON_WALLET_WARNING_BTN_2: 'Toon persoonlijke sleutel',
-        SIGNUP_COMMON_WALLET_WARNING_BTN_2_INFO: 'Als je van een persoonlijke sleutel een back-up wilt maken, sla het op in een tekstbestand, druk of schrijf het ergens veilig op. <br> Het is aan te bevelen om de persoonlijke sleutels offline op te slaan.',
+        SIGNUP_COMMON_WALLET_WARNING_BTN_2_INFO: 'Als je van een persoonlijke sleutel een back-up wilt maken, sla het op in een tekstbestand, druk of schrijf het ergens veilig op. Het is aan te bevelen om de persoonlijke sleutels offline op te slaan.',
         SIGNUP_COMMON_WALLET_WARNING_FOOTER: 'Door hieronder te klikken ga je akkoord dat je de bovenstaande waarschuwingen hebt gelezen en begrepen.',
         SIGNUP_COMMON_WALLET_WARNING_CONFIRM_1: 'Ik heb mijn portemonneebestand',
         SIGNUP_COMMON_WALLET_WARNING_CONFIRM_2: 'Ik heb mijn persoonlijke sleutel en wachtwoord',
         SIGNUP_COMMON_WALLET_WARNING_CONFIRM_3: 'Ik ga akkoord',
+        SIGNUP_COMMON_WALLET_WARNING_UNDERSTOOD: 'Begrepen',
+        SIGNUP_COMMON_WALLET_WARNING_DOWNLOAD: 'Download portemonnee',
         SIGNUP_ESTIMATED_PASSPHRASE_STRENGTH: 'Geschatte wachtwoord sterkte',
         SIGNUP_ESTIMATED_GUESS_TIMES: 'Geschat aantal keer raden',
+        SIGNUP_CONGRATS_MSG: '<b>Gefeliciteerd!</b> Je NEM adres is',
 
         // FAQ MODULE
-        FAQ_TITLE: 'Veel Gestelde Vragen',
+        FAQ_TITLE: 'Vaak gestelde vragen',
         FAQ_QUESTION_1: 'Hoe werkt Nano Wallet?',
         FAQ_ANSWER_1: 'Nano Wallet is gebouwd met behulp van de nieuwste cryptobibliotheken met ES6 en AngularJS. Het is een volledige client-applicatie die nooit gevoelige gegevens verzendt; Alles gebeurt in je browser m.b.t. het creëren van persoonlijke sleutels voor het ondertekenen van transacties.',
         FAQ_QUESTION_2: 'Is het vrij om te gebruiken?',
         FAQ_ANSWER_2: 'Absoluut alle handelingen zijn klant-kant, alleen jij hebt controle over je munten, geen derden en geen extra kosten.',
         FAQ_QUESTION_3: 'Waarom heb ik al een Mozaïek ?',
         FAQ_ANSWER_3: 'Omdat XEM de standaardvaluta van de NEM blockchain is, heeft elke gebruiker het al in hun portemonnee geregistreerd, zelfs als hun saldo 0. De namepsace is NEM en de mozaïeknaam is XEM',
-        FAQ_QUESTION_4: 'Routekaart?',
-        FAQ_ANSWER_4: 'De huidige routekaart omvat integratie van alle NEM-clientfuncties en afronding van gemeenschap gefinancierde projecten om over deze portemonnee te werken.',
+        FAQ_QUESTION_4: 'Roadmap?',
+        FAQ_ANSWER_4: 'De huidige roadmap omvat integratie van alle NEM-clientfuncties en de voltooiing van door de gemeenschap gefinancierde projecten te integreren.',
         FAQ_QUESTION_5: 'Kan ik gratis XEM krijgen?',
         FAQ_ANSWER_5: 'De NEM Faucet is momenteel leeg, maar je kunt het NEM forum raadplegen om te weten te komen over de beschikbare bounties.',
         FAQ_QUESTION_6: 'Waar vindt je meer informatie over NEM?',
         FAQ_ANSWER_6_FORUM: 'Officieel forum',
         FAQ_ANSWER_6_WEBSITE: 'Officiële website',
-        FAQ_ANSWER_6_BTT: 'Official BitcoinTalk thread',
-        FAQ_QUESTION_7: 'Hoe kan ik het project ondersteunen?',
-        FAQ_ANSWER_7: 'Nano Wallet wordt gehandhaafd door Quantum_Mechanics op basis van Gimre\'s lightwallet',
-        FAQ_ANSWER_7_2: 'Apostille is een dienst die werkt op de website <a href="http://apostille.nem.io">apostille.nem.io</a> in samenwerking met Jabo38 voor de <a href ="https://forum.nem.io/t/nem-apostille-a-nem-notaris-systeem-community-fund-proposal/2001" target="_blank">Apostille project</a>.',
-        FAQ_ANSWER_7_3: 'Als je bereid bent om te helpen, voel je vrij om hieronder een adres te kiezen, bedankt :)',
-        FAQ_ANSWER_7_4: 'NanoWallet projectfondsen:',
-        FAQ_ANSWER_7_5: 'Apostille dienstenfondsen:',
+        FAQ_ANSWER_6_BTT: 'Officiële BitcoinTalk thread',
+        FAQ_QUESTION_7: 'Er is niets weergegeven op het dashboard',
+        FAQ_ANSWER_7: 'Controleer de node-circel in de navigatiebar. <br> Rood betekent dat de connectie met de node is mislukt. <br> Klik op "Node" en selcteer een andere van de lijst of gebruik een aangepaste node. <br> <a href="https://supernodes.nem.io" target="_blank">Supernodes.nem.io</a> bevat een lijst met nodes die je kunt gebruiken.</a>',
+        FAQ_QUESTION_8: 'Mede-ondertekenaars kunnen de transactie die getekend moet worden niet zien',
+        FAQ_ANSWER_8: 'Ga in dit geval naar "Diensten", ga naar "Multi-handtekening en multi-gebruiker accounts" en klik op "Teken een multi-handtekening transactie".',
+        FAQ_QUESTION_9: 'Wat zijn de beste veiligheidsoverwegingen?',
+        FAQ_ANSWER_9: 'Het is ten strengste aan te bevelen om je persoonlijke sleutel op papier op te slaan.<br> Je kan hem printen en hem dan ergens veilig opslaan.<br><br>Met betrekking tot de portemonnee bestanden, hiervan altijd meerdere kopieën opslaan op verschillende locaties, zoals USB sitcks.<br>Wachtwoord moet uniek en complex zijn, schrijf hem daarom altijd eerst op.<br><br>Wanneer je je portemonnee wilt controleren of bewerkingen wilt uitvoeren:<br> - Sluit de USB-stick aan - Importeer de portemonnee in Nano<br> - Koppel de USB-stick los.<br><br>Een kopie van uw portemonnee wordt opgeslagen in de lokale cache van de browser. <br> Als je klaar bent, log je uit en verwijder je de portemonnee uit de lokale cache via de knop voor opschonen aan de rechterkant van de footer.',
+        FAQ_QUESTION_10: 'Waar vind ik informatie over mijn account (adres, enz.)?',
+        FAQ_ANSWER_10: 'Als u naar de bovenste navigatiebalk kijkt, ziet u een <b><i>"Account"</b></i> knop tussen <b><i>"Node"</b></i> en <b><i>"Taal"</b></i>. Daar kunt u uw adres, openbare sleutel, toegekende balans en andere belangrijke gegevens vinden.',
+        FAQ_QUESTION_11: 'Ik heb XEM naar een Exchange overgemaakt, maar er is niets bijgeschreven?',
+        FAQ_ANSWER_11_1: 'Eerst moet u controleren of de hash van uw transactie naar een bestaande transactie in de <a target="_blank" href="http://chain.nem.ninja">verkenner</a> verwijst (houd er rekening mee dat de verkenner een paar blokken achter kan lopen).',
+        FAQ_ANSWER_11_2: 'De meeste Exchanges vragen om een identificatiebericht om uw storting op uw account te zetten. Zorg ervoor dat je de instructies voor van de Exchange zorgvuldig hebt gevolgd en een bericht hebt toegevoegd dat NIET is gecodeerd.',
+        FAQ_ANSWER_11_3: 'Zelfs als u een bericht hebt toegevoegd, kan het gebeuren dat Exchange uw storting mogelijk niet kan verwerken vanwege problemen aan hun kant.',
+        FAQ_ANSWER_11_4: 'U moet contact opnemen met de helpdesk van de Exchange, de situatie uitleggen en hun de hash van de transactie verstrekken.',
+        FAQ_QUESTION_12: 'Hoe controleer ik of ik verbonden ben met een "Fork"?',
+        FAQ_ANSWER_12_1: 'Klik op <b><i>"Node"</b></i> in de bovenste navigatiebalk om het node-scherm te openen.',
+        FAQ_ANSWER_12_2: 'Kijk naar de blokhoogte en controleer het met de hoogte zoals <a target="_blank" href="http://bigalice3.nem.ninja:7890/chain/height">hier</a> weergegeven.',
+        FAQ_ANSWER_12_3: 'Als er een verschil is van 5 blokken, dan ben je waarschijnlijk verbonden met een "Fork".',
+        FAQ_ANSWER_12_4: 'Als je dit wilt herstellen, kiest u gewoon een andere node in de keuzelijst in het node-scherm. Het haalt de laatste status op vanaf het echter netwerk.',
 
         // FORM RELATED
         FORM_PASSWORD_FIELD_PLACEHOLDER: 'Voer je wachtwoord of wachtwoordzin in',
-        FORM_WALLET_NAME_FIELD_PLACEHOLDER: 'Portemonnee naam',
+        FORM_WALLET_NAME_FIELD_PLACEHOLDER: 'Portemonneenaam',
         FORM_SIGNUP_PASSWORD_FIELD_PLACEHOLDER: 'Wachtwoord',
         FORM_PASSWORD: 'Wachtwoord',
         FORM_PASSWORD_CONFIRM: 'Bevestig wachtwoord',
@@ -697,6 +764,9 @@ function DutchProvider($translateProvider) {
         FORM_MESSAGE_PLACEHOLDER: 'Bericht',
         FORM_MOSAIC_NAME_PLACEHOLDER: 'Mozaïeknaam',
         FORM_ADDRESS_ALIAS_PLACEHOLDER: 'Accountadres of @alias',
+        FORM_BTN_GET_ALIAS: 'Haal namespace adres op',
+        FORM_BTN_OPEN_ADB: 'Open adressenboek',
+        FORM_SELECT_NAMESPACE: 'Selecteer een namespace',
 
         // VOTING MODULE
         PORTAL_VOTING_TITLE: 'Stemmen',
@@ -706,7 +776,85 @@ function DutchProvider($translateProvider) {
         FORM_TITLE_FIELD_PLACEHOLDER: 'Titel',
         FORM_DESCRIPTION_FIELD_PLACEHOLDER: 'Schrijf je omschrijving hier',
         FORM_OPTION_FIELD_PLACEHOLDER: 'schrijf optie',
-        FORM_WHITELIST_FIELD_PLACEHOLDER: 'account addres'
+        FORM_WHITELIST_FIELD_PLACEHOLDER: 'account adres',
+        FORM_SELECT_MULTISIG: 'Selecteer een multi-handtekening account',
+        FORM_SELECT_CONTACT: 'Selecteer een contact',
+
+        // TREZOR RELATED
+        TREZOR_TITLE: 'TREZOR',
+        TREZOR_TEXT: 'De TREZOR hardware portemonnee maakt veilig werken met XEM, Mozaïeken en Multi-handtekening accounts mogelijk',
+        TREZOR_BUTTON: 'Aanmelden met TREZOR',
+
+        // CREATE OFFLINE TRANSACTION MODULE
+        OFFLINE_TX_TITLE: 'Bereid een offline transactie voor',
+        OFFLINE_TX_NO_WALLET: 'Importeer een portemonnee vanuit de login module om dit formulier te zien.',
+        OFFLINE_TX_INFO_1: 'Zorg ervoor dat de verbinding met internet is verbroken tijdens het importeren van uw portemonnee en het maken van de transactie!',
+        OFFLINE_TX_INFO_2: 'Er kunnen alleen eenvoudige transacties worden gemaakt, omdat een verbinding nodig is om mozaïeken en multi-handtekeningsinformatie op te halen uit NEM-nodes.',
+        OFFLINE_TX_INFO_3: 'Na het klikken op "Creëren" in het linkse paneel, dan vind je de ondertekende transactie hieronder.',
+        OFFLINE_TX_INFO_4: 'Een ondertekende transactie is onveranderbaar en zal alleen van kracht zijn als deze vóór het verstrijken van de standaardtermijn van 24 uur op het netwerk wordt vrijgegeven.',
+        OFFLINE_TX_SIGNED: 'Ondertekende transactie',
+        OFFLINE_TX_RELEASE: 'Open in vrijgave module',
+        OFFLINE_TX_MODAL_ALERT: 'Deze computer lijkt verbonden met internet, houd er rekening mee dat het maken van offline transacties <b>ALLEEN</b> veilig is op een computer die <b>NOOIT</b> is verbonden met internet.',
+
+        // RELEASE OFFLINE TRANSACTION MODULE
+        RELEASE_OFFLINE_TX_TITLE: 'Offline transactie vrijgeven naar het netwerk',
+        RELEASE_OFFLINE_TX_PARAMETERS: 'Transactie parameters',
+        RELEASE_OFFLINE_TX_INFO_1: 'Om een transactie vrij te geven moet je met internet zijn verbonden.',
+        RELEASE_OFFLINE_TX_INFO_2: 'Zorg ervoor dat je het juiste netwerk en een werkende node hebt geselecteerd, anders wordt de transactie geweigerd.',
+        RELEASE_OFFLINE_TX_INFO_3: 'Het is niet mogelijk om een ondertekende transactie twee keer te verzenden. Eén ondertekende transactie genereert altijd dezelfde hash en twee transacties kunnen niet dezelfde hash hebben.',
+        RELEASE_OFFLINE_TX_INFO_4: 'Je kunt een ondertekende transactie veilig vrijgeven vanaf elke computer.',
+
+        // INVOICE MODULE
+        CREATE_INVOICE_TITLE: 'Creëer een factuur',
+
+        // CREATE SIGNED MESSAGE MODULE
+        CREATE_SIGNED_MSG_TITLE: 'Creëer een ondertekend bericht',
+        CREATE_SIGNED_MSG_NAME: 'Ondertekend bericht',
+        CREATE_SIGNED_MSG_SIGN: 'Onderteken een bericht',
+
+        // VERIFY SIGNED MESSAGE MODULE
+        VERIFY_SIGNED_MSG_TITLE: 'Verifieer een ondertekend bericht',
+        VERIFY_SIGNED_MSG_SIG_VALID: 'Handtekening is geldig',
+        VERIFY_SIGNED_MSG_SIG_NOT_VALID: 'Handtekening is <b>NIET</b> geldig',
+        VERIFY_SIGNED_MSG_NOT_VALID: 'Ondertekend bericht is niet geldig!',
+
+        // DNS MODULE
+        DNS_SHORT_DESC: "Gedecentraliseerd Domain Name System (DNS) service voor namespace.nem domeinen",
+        DNS_CONFIGURE: "Configureer DNS",
+        DNS_SEARCH_DNS: "Zoek DNS",
+        DNS_GO_SEARCH: "START!",
+        DNS_GET_INFO: "Informatie ophalen",
+        DNS_SEARCH_HEADLINE: "Zoek DNS",
+        DNS_SEARCH_HELP: "DNS help",
+        DNS_SEARCH: "Zoek",
+        DNS_SEARCH_HELP_INFO: "Type een namespace.nem om de DNS informatie op te halen of direct naar de website te gaan.",
+        //DNS CONFIGURE
+        DNS_SELECT_NAMESPACE:"selecteer namespace",
+        DNS_POINTER_ADDRESS:"'Pointer'-adres",
+        DNS_IP_ADDRESS:"IP adres",
+        DNS_ORGA:"Organisatie",
+        DNS_COUNTRY:"Land",
+        DNS_ADDRESS:"Adres",
+        DNS_PHONE:"Telefoon",
+        DNS_EMAIL:"E-mail",
+        DNS_OTHERINFO:"Overige info",
+        DNS_JSONMSG:"Json bericht",
+        DNS_CHAR_LEFT:"Tekens over",
+        DNS_HELP1:"De eigenaar van een NEM namespace kan de NEM DNS in enkele eenvoudige stappen gebruiken. De DNS is gebouwd rond het namespace-platform in het NEM-ecosysteem en een bijbehorend 'pointer'-adres (PA). De eigenaar van de namespace moet een transactie naar het namespace 'pointer'-adres verzenden, inclusief een ongecodeerd bericht in json-formaat met informatie over de namespace. Het bericht kan relevante informatie bevatten, zoals IP-adres, eigendomsinformatie, fysiek adres, contactgegevens en nog veel meer.",
+        DNS_HELP2:"Zo kun je het doen:",
+        DNS_HELP3:"1. selecteer namespace",
+        DNS_HELP4:"2. schrijf relevante of update DNS informatie",
+        DNS_HELP5:"3. verzend transactie naar 'pointer'-adres",
+        //DNS ALERTS
+        ALERT_DNS_SUCCESS: "Informatie gevonden",
+        ALERT_DNS_NO_INFO_FOUND: "Geen DNS informatie gevonden",
+
+        // IMPORT WALLET QRCODE
+        IMPORT_WALLET_QRCODE_TITLE: 'Importeer portemonnee QR Code',
+        IMPORT_WALLET_QRCODE_INFORMATION: 'Ondersteuning voor portemonnee QR Code: NEM WeChat Wallet, iOS, Android.',
+        IMPORT_WALLET_QRCODE_LOAD: 'Laad portemonnee QR Code',
+        IMPORT_WALLET_QRCODE_SCAN: 'Scan',
+        IMPORT_WALLET_QRCODE_STOP_SCAN: 'Stop scannen'
     });
 
 }

@@ -27,6 +27,8 @@ function JapaneseProvider($translateProvider) {
       HEADER_NODE_CUSTOM_TOOLTIP: 'あなた自身のNISノードを入力',
       HEADER_PURGE: "アカウントデータの削除(パージ)",
       HEADER_PURGE_MESSAGE: "必ずバックアップを行った上で実行して下さい。OK をクリックすると、ローカルストレージに登録されているすべてのウォレットが削除(パージ)されます。すべてのウォレットをバックアップしていた場合、残高は安全です（回復にはバックアップファイルの再読み込みが必要です）。",
+      HEADER_OFFLINE_TX: 'オフライントランザクションの準備',
+      HEADER_RELEASE_TX: 'トランザクションのリリース',
 
       // FOOTER COMPONENT
       FOOTER_POWERED_BY_1: 'Powered by',
@@ -57,7 +59,8 @@ function JapaneseProvider($translateProvider) {
       DASHBOARD_NOTICE_3: 'NEM チームは、メインネットを利用する前に、最初にテストネットにて NanoWallet の操作を行い、利用方法を習得する事をお勧めします。英文のガイドブックは<a href="https://blog.nem.io/nanowallet-tutorial/" target="_blank">こちら</a>にあります。利用者は自身の資金を管理し、秘密鍵をバックアップしてください。NEM チームは、メインネット上でこのアプリケーションを利用することに起因する、資金の消失について責任を負いません。',
       DASHBOARD_NOTICE_4: '紙に秘密鍵を書き留めて、安全な場所に保存することをお勧めします。また、あなたのアカウントをAndroid 及び iOS アプリにインポートして、バックアップする事もできます。',
       DASHBOARD_NOTICE_5: 'Thanks for your participation!', //すまねぇ、ここどう訳すか迷ってそのままｗ
-      
+      DASHBOARD_MORE_TXES: 'もっとトランザクションを見る',
+
       // GENERAL
       GENERAL_BLOCK: "ブロック",
       GENERAL_BLOCKS: 'ブロック',
@@ -145,19 +148,33 @@ function JapaneseProvider($translateProvider) {
       GENERAL_SEND_XEM: 'XEMの送金',
       GENERAL_ACTIVE: '有効',
       GENERAL_INACTIVE: '無効',
-      GENERAL_ACTIVATING: "有効化中",
-      GENERAL_DEACTIVATING: "無効化中",
-      GENERAL_REMOTE: "リモート",
+      GENERAL_ACTIVATING: '有効化中',
+      GENERAL_DEACTIVATING: '無効化中',
+      GENERAL_REMOTE: 'リモート',
       GENERAL_WARNING: '警告',
       GENERAL_SCORE: 'スコア',
       GENERAL_LENGTH: '長さ',
-        
+      GENERAL_GO_BACK: '戻る',
+      GENERAL_NEXT: '次へ',
+      GENERAL_START: 'スタート',
+      GENERAL_ALIAS: 'エイリアス',
+      GENERAL_CONTACTS: 'コンタクト',
+      GENERAL_ENCRYPTED: '暗号化',
+      GENERAL_UNENCRYPTED: '平文',
+      GENERAL_HEXADECIMAL: '16進数',
+      GENERAL_SELECT_ACCOUNT: 'アカウントの選択',
+      GENERAL_INVOICE: '請求書',
+      GENERAL_SIGNATURE: '署名',
+      GENERAL_VERIFY: '検証',
+
       // HOME MODULE
       HOME_UNSUPPORTED_BROWSER: '申し訳ありません。このブラウザでは安全に NanoWallet を使用する事ができません。',
       HOME_RECOMMENDED_BROWSERS: '推奨ブラウザ：',
+      HOME_FEATURE_STAND_BY: '各機能の説明はカーソルを合わせると表示されます。',
+      HOME_FEATURE_1: 'XEMの送受信は早くて簡単、ブロックタイムは1分です！',
 
       // TRANSFER TRANSACTION MODULE
-      TRANSFER_TRANSACTION_TITLE: "送金と請求",
+      TRANSFER_TRANSACTION_TITLE: "送信",
       TRANSFER_TRANSACTION_NAME: "トランスファートランザクション", //画面崩れ防止の為短く変更："トランスファートランザクション（通常トランザクション）"
       TRANSFER_TRANSACTION_MULTISIG_NAME: "マルチシグトランスファートランザクション", //画面崩れ防止の為短く変更："マルチシグトランスファートランザクション（通常トランザクション）"
       TRANSFER_TRANSACTION_INVOICE: "請求書を作成",
@@ -167,9 +184,10 @@ function JapaneseProvider($translateProvider) {
       TRANSFER_TRANSACTION_ATTACH: "添付",
       TRANSFER_TRANSACTION_MOSAICS_ATTACHED: "添付するモザイク",
       TRANSFER_TRANSACTION_ENCRYPT_MESSAGE: "メッセージを暗号化",
-      TRANSFER_TRANSACTION_HEX_MESSAGE: 'Hex メッセージ',
+      TRANSFER_TRANSACTION_MESSAGE_TYPE: 'メッセージタイプ',
+      /*TRANSFER_TRANSACTION_HEX_MESSAGE: 'Hex メッセージ',
       TRANSFER_TRANSACTION_ENCRYPT_TOOLTIP: 'ネットワーク上に受信者の公開鍵がありません',
-      TRANSFER_TRANSACTION_ENCRYPT_TOOLTIP_MULTISIG: "マルチシグアカウントを介した暗号化メッセージはありません",
+      TRANSFER_TRANSACTION_ENCRYPT_TOOLTIP_MULTISIG: "マルチシグアカウントを介した暗号化メッセージはありません",*/
 
       // TRANSACTION LINES
       LINE_TX_DETAILS_FROM: "送り主（From）",
@@ -177,7 +195,7 @@ function JapaneseProvider($translateProvider) {
       LINE_TX_DETAILS_WAITING: "認証中のトランザクション",
       LINE_TX_DETAILS_NEED_SIG: "複数署名を要求",
       LINE_TX_DETAILS_NEED_SIG_2: "このトランザクションはあなたの署名を必要としています。",
-      LINE_TX_DETAILS_MESS_ENC: "暗号化されている",
+      //LINE_TX_DETAILS_MESS_ENC: "暗号化されている",
       LINE_TX_DETAILS_MESS_DEC: "復号する",
       LINE_TX_DETAILS_HASH: "ハッシュ",
       LINE_TX_DETAILS_DEC_MESS: "メッセージを復号",
@@ -223,13 +241,13 @@ function JapaneseProvider($translateProvider) {
       IMPORTANCE_TRANSFER_REMOTE_ACTIVATING: "委任収穫を開始するためにはリモートステータスがアクティブになるまで待つ必要があります。",
       IMPORTANCE_TRANSFER_REMOTE_INACTIVE: "リモートアカウントをアクティブにするために左パネルからインポータンストランスファートランザクションを送信する必要があります。",
       IMPORTANCE_TRANSFER_MULTISIG_NOT_INITIATOR: "あなたは、インポータンストランスファートランザクションを開始した連署者ではありません。従って委任収穫を開始または停止することができません。収穫操作権限を取り戻す方法をタブから確認してください。",
-      IMPORTANCE_TRANSFER_MULTISIG_SELECT: "マルチシグアカウントを選択",
-      IMPORTANCE_TRANSFER_MULTISIG_SELECT_MESSAGE: "ステータスを表示するマルチシグアカウントを選択してください。",
       IMPORTANCE_TRANSFER_PRIVATE_KEY_PLACEHOLDER: '委任秘密鍵の参照',
       IMPORTANCE_TRANSFER_DELEGATED_KEYS: 'デリゲートアカウントキー',
       IMPORTANCE_TRANSFER_HARVESTING_STATUS: 'ハーベスティング',
       IMPORTANCE_TRANSFER_START_HARVESTING: 'デリゲートハーベスティングの開始',
       IMPORTANCE_TRANSFER_STOP_HARVESTING: 'デリゲートハーベスティングの停止',
+      IMPORTANCE_TRANSFER_ACTIVATE_DEACTIVATE_REMOTE: 'デリゲートアカウントの有効化 / 無効化',
+      IMPORTANCE_TRANSFER_SHOW_DELEGATED_KEYS: 'デリゲートアカウントのキーを表示する',
 
       // CREATE MOSAIC MODULE
       MOSAIC_DEFINITION_TITLE: "モザイクを作成",
@@ -275,6 +293,7 @@ function JapaneseProvider($translateProvider) {
       MOSAIC_DEFINITION_INFORMATION_14: "固定徴収方式の場合、徴収額は転送される量に依存しません。",
       MOSAIC_DEFINITION_INFORMATION_15: "パーセンタイル徴収方式の場合、徴収額は送信するモザイクの量に従って変化します。",
       MOSAIC_DEFINITION_INFORMATION_16: "モザイクを NEM ブロックチェーンに送信するには手数料がかかります。実際の手数料はそのモザイクの総量と送信量に依存します。<b>スモールビジネスモザイク</b>は割引が適用され、一回の送信あたり0.05 XEMが定額手数料となります。",
+      MOSAIC_DEFINITION_INFORMATION_17: 'あなたが供給量の100%を保有している場合、同名の"namespace:mosaic"にて、モザイク作成トランザクションを再度送信することで、全てのモザイクプロパティを上書きすることができます。',
 
       // EDIT MOSAIC MODULE
       MOSAIC_SUPPLY_CHANGE_TITLE: "モザイク供給量を変更",
@@ -354,6 +373,8 @@ function JapaneseProvider($translateProvider) {
       ACCOUNT_CUSTOM_NODE: "カスタムノードを使う",
       ACCOUNT_NODE_FROM_LIST: "一覧からノードを使う",
       ACCOUNT_DELEGATED_PRIVATE_KEY: "委任秘密鍵",
+      ACCOUNT_NO_PUBLIC_KEY: '公開鍵を取得するためにはトランザクションを発行してください。',
+      ACCOUNT_SHOW_ON_TREZOR_BTN: 'TREZORで見る',
 
       // PORTAL MODULE
       PORTAL_TITLE: "各種機能",
@@ -364,9 +385,9 @@ function JapaneseProvider($translateProvider) {
       PORTAL_MULTISIG_BTN_3: 'マルチシグトランザクションの署名',
       PORTAL_HARVESTING_TITLE: "デリゲートハーベスティング（委任）",
       PORTAL_HARVESTING_TEXT: "デリゲートハーベスティングは、アカウントが起動していない時間でもリモート・ノードを介して「マイニング（ハーベスト）」を可能にする機能です。",
-      PORTAL_CHANGELLY_TITLE: "Changelly （XEM 等の両替サイト）",
-      PORTAL_CHANGELLY_TEXT: "最適なレートで XEM を交換できる Changelly ウィジェットを使用できます。",
-      PORTAL_CHANGELLY_BTN: "XEM を購入",
+      PORTAL_EXCHANGE_TITLE: 'インスタントエクスチェンジ',
+      PORTAL_EXCHANGE_TEXT: 'ChangellyやShapeShiftウィジェットを使って、最適レートでXEMを購入しましょう！',
+      PORTAL_EXCHANGE_BTN: 'XEMを購入',
       PORTAL_NS_TITLE: "ネームスペースとサブドメイン",
       PORTAL_NS_TEXT: "ネームスペースはドメイン名のようなものです。ネームスペース名はユニーク(他に同一の名称無し)であり、その配下にサブネームスペースやモザイク （アセット） を発行する事ができます。",
       PORTAL_NS_BTN: "ネームスペースを作成",
@@ -380,6 +401,8 @@ function JapaneseProvider($translateProvider) {
       PORTAL_APOSTILLE_BTN_2: "監査（公証の確認）",
       PORTAL_ADDRESS_BOOK_TEXT: 'アドレスにラベルを付けることによって、 連絡先を簡単に管理する事ができます。',
       PORTAL_ADDRESS_BOOK_BTN: 'アドレス帳の管理',
+      PORTAL_INVOICE_TEXT: '共有するためのQRコード請求書を作成します',
+      PORTAL_SIGNED_MSG_TEXT: 'トランザクションなしにアカウントの所有認証をするための署名済みメッセージの作成と検証を行います。',
 
       // ADDRESS BOOK MODULE
       ADDRESS_BOOK_TITLE: 'アドレス帳',
@@ -424,6 +447,11 @@ function JapaneseProvider($translateProvider) {
       // ACCOUNT EXPLORER
       ACCOUNTS_EXPLORER_TITLE: 'エクスプローラ - アカウント',
       ACCOUNTS_EXPLORER_SEARCH: '検索',
+
+      // TRANSACTIONS EXPLORER
+      EXPLORER_TRANSACTIONS_TITLE: 'あなたのトランザクション履歴',
+      EXPLORER_TRANSACTIONS_LOAD_MORE: 'もっと読み込む',
+
 
       // APOSTILLE HISTORY MODULE
       APOSTILLE_HISTORY_TITLE: "アポスティーユの履歴",
@@ -558,12 +586,19 @@ function JapaneseProvider($translateProvider) {
       ALERT_BTC_MARKET_ERROR: 'Bitcoinの価格の取得に失敗しました',
       ALERT_COSIG_REMOVAL_LIMIT: '一度に削除できる署名者は1名だけです',
       ALERT_MULTISIG_MIN_SIGNATURE_INVALID: '最小署名者数が無効な値です',
-      ALERT_INSUFFICIENT_BALANCE: 'Insufficient Balance for performing the operation',
-      ALERT_VOTING_ERROR: 'Invalid Vote',
+      ALERT_INSUFFICIENT_BALANCE: '操作をするために必要な残高が不足しています',
+      ALERT_VOTING_ERROR: '無効な投票です',
       ALERT_BRAIN_PASSWORD_TOO_SHORT: 'ブレインウォレットのパスフレーズは最低でも40文字以上にしてください！',
       ALERT_NODE_SEEMS_OFFLINE: 'ノードがオフラインになっています。別のノードを選択してください。',
       ALERT_WEAK_PASSPHRASE: 'パスフレーズのセキュリティースコアは少なくとも3でなければなりません。',
       ALERT_BRAIN_WALLET_UPGRADE: 'ブレインウォレットのパスフレーズが弱すぎます! 全てのブレインウォレットは、少なくとも40文字以上のパスフレーズを使用する必要があります。<br>アカウント作成ページから新しいウォレットを作成し、それに資金を移すことをお勧めします。<br>詳しくは<a href="https://forum.nem.io/t/2791" target="_blank"><u>こちら</u></a>をご覧ください。',
+      ALERT_RECIPIENT_PUBLIC_KEY: '受信者はネットワーク上で確認できる公開鍵を持っていません',
+      ALERT_ENCRYPT_MULTISIG: 'マルチシグアカウント経由では暗号化メッセージを送信できません',
+      ALERT_EXCHANGE_NEEDS_MESSAGE: '受信者は取引所のウォレットなので、あなたのアカウントに正しく入金されるにはメッセージが必要です。取引所の入金方法をよく確認してください！',
+      ALERT_ACCOUNT_ALREADY_IN_ADDRESS_BOOK: 'コンタクトは既にアドレスブックに登録されています！',
+      ALERT_MAX_MOSAIC_SUPPLY: 'モザイク最大供給量は 9\'000\'000\'000 です。',
+      ALERT_GET_MOSAIC_SUPPLY_ERROR: 'モザイクの供給量取得エラーです。理由: ',
+      ALERT_ENCRYPTED_MSG_OFFLINE: 'Encrypted messaging is not enabled in offline transactions',
 
       // SUCCESS ALERTS
       ALERT_CREATE_WALLET_SUCCESS: "ウォレットが正常に作成され、ロードされました。",
@@ -577,8 +612,10 @@ function JapaneseProvider($translateProvider) {
       ALERT_NTY_FILE_SUCCESS: ".nty ファイルは正常にロードされました。",
       ALERT_INCOMING_TX_FROM: "トランザクションを受信",
       ALERT_ADDRESS_BOOK_FILE_SUCCESS: 'アドレス帳のインポートに成功しました!',
-      ALERT_VOTING_SUCCESS: 'Vote Sent Successfully',
-      ALERT_POLL_CREATION_SUCCESS: 'Poll Created Successfully',
+      ALERT_VOTING_SUCCESS: '投票の送信に成功しました。',
+      ALERT_POLL_CREATION_SUCCESS: '投票の作成に成功しました。',
+      ALERT_COPY_SIGNED_TX_SUCCESS: '署名済みトランザクションをコピーしました！',
+      ALERT_COPY_SIGNED_MSG_SUCCESS: '署名済みメッセージをコピーしました！',
 
       // CONVERT ACCOUNT TO MULTISIG
       AGGREGATE_MODIFICATION_TITLE: "マルチシグアカウントへ変換",
@@ -607,6 +644,8 @@ function JapaneseProvider($translateProvider) {
       AGGREGATE_SELECTED_ACCOUNT_INFO: "選択されたアカウントの情報",
       AGGREGATE_MIN_SIGNATURES: '最小署名者数',
       AGGREGATE_SELECT_WALLET_ACCOUNT: "使用するウォレットアカウント",
+      AGGREGATE_ADD_COSIG: '連署者の追加',
+      AGGREGATE_REMOVE_COSIG: '連署者の削除',
 
       // SIGN MULTISIGNATURE TRANSACTIONS
       SIGN_MULTISIG_TRANSACTIONS_TITLE: 'マルチシグトランザクションの署名',
@@ -620,19 +659,39 @@ function JapaneseProvider($translateProvider) {
       LOGIN_SELECT_WALLET_YOURS: 'ウォレットの選択',
       LOGIN_SELECT_WALLET: "ローカルストレージからウォレットを選択してください。",
       LOGIN_LOGIN_BUTTON: "サインイン",
+      LOGIN_NOTE: 'ウォレットがない？インポートするか<a href="#!/signup">作成しましょう</a>',
 
       // SIGNUP MODULE
       SIGNUP_TITLE: "NEM を始めますか?",
+      SIGNUP_SELECT_WALLET_TYPE: 'ウォレットのタイプを選んでください',
+      SIGNUP_SELECT_WALLET_TYPE_STAND_BY: 'ウォレットタイプの説明はカーソルを合わせると表示されます。',
       SIGNUP_CREATE_WALLET_TITLE: "シンプルウォレット",
+      SIGNUP_CREATE_WALLET_INFO: 'シンプルウォレットはランダムに生成された秘密鍵を含みます。',
       SIGNUP_PRIVATE_KEY_WALLET_TITLE: "プライベートキーウォレット",
+      SIGNUP_PRIVATE_KEY_WALLET_INFO: 'プライベートキーウォレットはインポートしたい主秘密鍵を含みます。',
       SIGNUP_BRAIN_WALLET_TITLE: "ブレインウォレット",
+      SIGNUP_BRAIN_WALLET_INFO: 'ブレインウォレットはパスフレーズからなる主秘密鍵を含みます。正確なパスフレーズを知っている場合だけウォレットを取り出すことができます。',
       SIGNUP_CREATE_WALLET_BUTTON: "シンプルウォレットを作成",
       SIGNUP_PRIVATE_KEY_WALLET_BUTTON: "プライベートキーウォレットを作成",
       SIGNUP_BRAIN_WALLET_BUTTON: "ブレインウォレットを作成",
       SIGNUP_CREATE_WALLET_WARNING: "クライアント側で生成された鍵の<a href=\"https://www.w3.org/TR/2014/WD-WebCryptoAPI-20140325/#RandomSource-interface\" rel=\"nofollow\" target=\"_blank\">危険性</a>についてお読みください。鍵生成の偏りなどが原因で損失が発生しても保証できません。損失が発生する可能性は極めて低いですが、NEM クライアントから生成された秘密鍵を使用することをお勧めします。",
       SIGNUP_NETWORK_SELECT: "ネットワークを選択してください。",
+      SIGNUP_NETWORK_MAINNET: 'Mainnetは<b><u>現実に価値を持つ</u></b>NEMのネットワークです。アドレスは\'N\'から始まります。',
+      SIGNUP_NETWORK_TESTNET: 'Testnetは<b><u>テスト用</u></b>のNEMのネットワークです。アドレスは\'T\'から始まります。',
+      SIGNUP_NETWORK_MIJIN: 'MijinはNEMのプライベート版です。アドレスは\'M\'から始まります。',
       SIGNUP_BRAIN_WALLET_WARNING: "ブレインウォレットの<a href=\"https://en.bitcoin.it/wiki/Brainwallet\" rel=\"nofollow\" target=\"_blank\">危険性</a>について留意してください。ブレインウォレットはハッシュ化されたパスフレーズのみを利用し何度も使用されます。したがって、少なくとも40文字以上の「安全な」パスフレーズを選んでください。<a href=\"https://xkcd.com/936/\" rel=\"nofollow\" target=\"_blank\">XKCD #936</a>",
       SIGNUP_PRIVATE_KEY_WALLET_WARNING: "プライベートキーウォレットは、インポートされた秘密鍵を暗号化するためにパスワードのみを使用します。したがって、「安全な」パスワードを利用する事が重要です。 ",
+      SIGNUP_CREATE_START_WARNING: '各ステップは慎重に行ってください！',
+      SIGNUP_CREATE_START_CONNECTION_WARNING: 'ウォレットの作成とデータのバックアップ中にはインターネットから切断することを推奨します。',
+      SIGNUP_CREATE_READY_BTN: '準備できました',
+      SIGNUP_CREATE_ENTER_NAME: 'ウォレット名を入力してください',
+      SIGNUP_CREATE_ENTER_PASSWORD: 'パスワードを入力してください',
+      SIGNUP_CREATE_ENTER_PASSPHRASE: 'パスフレーズを入力してください',
+      SIGNUP_CREATE_CONFIRM_PASSWORD: 'パスワードを再入力してください',
+      SIGNUP_CREATE_CONFIRM_PASSPHRASE: 'パスフレーズを再入力してください',
+      SIGNUP_CREATE_ENTER_PRIVATE_KEY: '秘密鍵を入力してください',
+      SIGNUP_CREATE_ADDRESS_FROM_PK: '上記のキーに対応するアドレス',
+      SIGNUP_CREATE_WALLET_ADD_ENTROPY_INFO: 'これからあなたの秘密鍵を生成します。<b>スタートボタンを押して、エントロピーを増大させるためにカーソルを動かしてください。</b>',
       //SIGNUP_COMMON_WALLET_WARNING: 'ウォレットは、<a><b>一時的に</b></a>ブラウザ内のローカルストレージに保存されます。ウォレット作成後に自動的にダウンロードされる .wlt ファイルはバックアップとして利用します。ブラウザのローカルストレージが削除された場合は、このファイルからインポート可能です。バックアップとして、.wlt ファイルを保存していない場合は、アカウントにログインして、秘密鍵をコピーし安全な場所にバックアップして下さい。バックアップされている事を確認してから、自己の責任に於いてアカウントに資金を送金してください。',
       //SIGNUP_COMMON_WALLET_WARNING_FOOTER: '以下をクリックすると、上記の警告を読み、理解したことに同意したことになります。',
       SIGNUP_COMMON_WALLET_WARNING_TITLE: 'アカウントを安全に使用する為に',
@@ -643,15 +702,18 @@ function JapaneseProvider($translateProvider) {
       SIGNUP_COMMON_WALLET_WARNING_5: 'あなたの秘密鍵がバックアップされていることを確認した後に、あなたのアカウントに自己の責任において資金を送金してください。',
       SIGNUP_COMMON_WALLET_WARNING_6: 'それぞれのウォレットは、<b><u>主秘密鍵</u></b>（上に表示される）を持っています。それは2番目のアカウントを作成するためにも使用されます(BIP32)。この機能は<b><u>同じパスワード</u></b>を使用する必要があり、そうでない場合には同じ主秘密鍵を利用しても、異なるセカンダリアカウントを生成します。あなたがデータをバックアップする際には、忘れずに<b><u>あなたのパスワードを書き留めてください</u></b>。',
       SIGNUP_COMMON_WALLET_WARNING_BTN_1: 'ウォレットファイルの表示',
-      SIGNUP_COMMON_WALLET_WARNING_BTN_1_INFO: 'ウォレットファイルを作成するには、空のテキストファイルを作成し、上記のBase64で作成されたキーを記入します。<br>ファイルを<b><i>yourWalletName.wlt</i></b>という名前で保存し、インポートすることができます。',
+      SIGNUP_COMMON_WALLET_WARNING_BTN_1_INFO: 'ウォレットファイルを作成するには、空のテキストファイルを作成し、上記のBase64で作成されたキーを記入します。ファイルを<b><i>yourWalletName.wlt</i></b>という名前で保存し、インポートすることができます。',
       SIGNUP_COMMON_WALLET_WARNING_BTN_2: 'プライベートキーの表示',
-      SIGNUP_COMMON_WALLET_WARNING_BTN_2_INFO: '秘密鍵をバックアップするには、テキストファイルに保存して印刷するか、安全な場所に書き込んでください。 <br>秘密鍵はオフラインで保存することをお勧めします。',
+      SIGNUP_COMMON_WALLET_WARNING_BTN_2_INFO: '秘密鍵はアカウントの全ての権限を持つので必ず秘密にしてください。<b>絶対に誰にも教えてはいけません</b>。秘密鍵は安全でオフラインな場所に保管することを<b>強く推奨します</b>。',
       SIGNUP_COMMON_WALLET_WARNING_FOOTER: '以下をクリックすると、上記全ての警告を読み理解し同意したことになります。',
       SIGNUP_COMMON_WALLET_WARNING_CONFIRM_1: 'ウォレットファイルをバックアップしました',
-      SIGNUP_COMMON_WALLET_WARNING_CONFIRM_2: '秘密鍵とパスワードバックアップしました',
+      SIGNUP_COMMON_WALLET_WARNING_CONFIRM_2: '秘密鍵とパスワードをバックアップしました',
       SIGNUP_COMMON_WALLET_WARNING_CONFIRM_3: '私は全ての内容を理解し同意しました',  //このあたりは、英文より厳しく書いてます。
+      SIGNUP_COMMON_WALLET_WARNING_UNDERSTOOD: '理解し同意しました',
+      SIGNUP_COMMON_WALLET_WARNING_DOWNLOAD: 'ウォレットをダウンロードする',
       SIGNUP_ESTIMATED_PASSPHRASE_STRENGTH: '推定パスフレーズ強度',
       SIGNUP_ESTIMATED_GUESS_TIMES: '推定解析時間',
+      SIGNUP_CONGRATS_MSG: '<b>おめでとう！</b> あなたの NEM アドレスは',
 
       // FAQ MODULE
       FAQ_TITLE: "よくある質問",
@@ -669,12 +731,24 @@ function JapaneseProvider($translateProvider) {
       FAQ_ANSWER_6_FORUM: "公式フォーラム",
       FAQ_ANSWER_6_WEBSITE: "公式ウェブサイト",
       FAQ_ANSWER_6_BTT: "公式 BitcoinTalk スレッド",
-      FAQ_QUESTION_7: "どうすればこのプロジェクトをサポートできますか？",
-      FAQ_ANSWER_7: "NanoWallet は Gimre氏 の lightwallet をベースに、Quantum_Mechanics が管理しています。lightwallet ソースはこちら",
-      FAQ_ANSWER_7_2: "アポスティーユは Jabo38 と<a href=\"http://apostille.io\">apostille.io</a>ウェブサイト全体で取り組んでいるサービスです。\n<a href=\"https://forum.nem.io/t/nem-apostille-a-nem-notary-system-community-fund-proposal/2001\" target=\"_blank\">Apostille project</a>.",
-      FAQ_ANSWER_7_3: "下記のアドレスに対して、あなたがもし寄付てくれるならば、我々は非常に嬉しい限りです^_^",
-      FAQ_ANSWER_7_4: "NanoWallet プロジェクトファンド",
-      FAQ_ANSWER_7_5: "アポスティーユ（公証）ファンド",
+      FAQ_QUESTION_7: 'ダッシュボードに何も表示されません',
+      FAQ_ANSWER_7: 'トップのナビゲーションバーにあるノードの円アイコンを確認してください。<br>赤い円はノードへの接続に失敗していることを表します。<br>"ノード"をクリックし、ほかのノードをドロップダウンリストから選択するかカスタムノードを指定してください。<br><a href="https://supernodes.nem.io" target="_blank">Supernodes.nem.io</a>に利用可能なノードが掲載されています。</a>',
+      FAQ_QUESTION_8: '連署者に署名してほしいトランザクション表示されません。',
+      FAQ_ANSWER_8: 'この場合、"サービス"へ移動し、"マルチシグおよびマルチユーザーアカウント"の項目から"マルチシグトランザクションの署名"を選択してください。',
+      FAQ_QUESTION_9: '最適なセキュリティは？',
+      FAQ_ANSWER_9: '特に推奨するのは秘密鍵を紙に保存することです。<br>プリントアウトしてどこか安全な所で保管してください。<br><br>ウォレットファイルについても同様に、複数のコピーをUSBメモリなどのオフラインな場所に保存してください。<br>パスワードは一意で複雑にしてください。そのため、まずは書き留めておいてください。<br><br>ウォレットを確認する、もしくは操作をしたいときは:<br> - USBメモリを指します<br> - NanoWalletにインポートします<br> - USBメモリを抜きます<br><br> ウォレットのコピーは必要な時にブラウザのローカルストレージに保存されます。<br>作業が終わったら、ログアウトし、フッターの右端にある削除ボタンでローカルストレージ内のウォレットを削除してください。',
+      FAQ_QUESTION_10: 'どこに自分のアカウントの情報(アドレスなど)がありますか？',
+      FAQ_ANSWER_10: '上部のナビゲーションバーにある<b><i>"ノード"</b></i>と<b><i>"言語"</b></i>の間に<b><i>"アカウント"</b></i>ボタンがあります。ここでアドレスや公開鍵、既得バランスなどの重要な情報を得られます。',
+      FAQ_QUESTION_11: '交換所にXEMを入金しましたが、残高に反映されません。',
+      FAQ_ANSWER_11_1: '最初にあなたのトランザクションを<a target="_blank" href="http://chain.nem.ninja">エクスプローラー</a>上に表示されるか確認してください。(エクスプローラーには数ブロック程度の遅延があります)',
+      FAQ_ANSWER_11_2: 'ほとんどの交換所はあなたの入金を識別するためにメッセージを要求します。各交換所においての手順をよく理解し、暗号化していないメッセージを添付してください。',
+      FAQ_ANSWER_11_3: '交換所の問題によって、メッセージを添付しているにも関わらずあなたの入金が処理されない場合もあります。',
+      FAQ_ANSWER_11_4: '交換所のサポートへトランザクションのハッシュを提供して状態を説明してください。',
+      FAQ_QUESTION_12: 'フォーク上にいるかを確認するためには？',
+      FAQ_ANSWER_12_1: '上部のナビゲーションバーから<b><i>"ノード"</b></i>をクリックし、ノードパネルを開きます。',
+      FAQ_ANSWER_12_2: 'ブロック高について<a target="_blank" href="http://bigalice3.nem.ninja:7890/chain/height">ここ</a>で表示できる高さと比較してみてください。',
+      FAQ_ANSWER_12_3: 'もし5ブロック以上差がある場合はフォークしているかもしれません。',
+      FAQ_ANSWER_12_4: '補正するためにはノードパネルのドロップダウンリストから他のノードを選択してください。ネットワーク上の最新の情報でアカウントが再読込されます。',
 
       // FORM RELATED
       FORM_PASSWORD_FIELD_PLACEHOLDER: "ウォレットのパスワード、もしくはパスフレーズを入力してください。",
@@ -699,6 +773,9 @@ function JapaneseProvider($translateProvider) {
       FORM_MESSAGE_PLACEHOLDER: "メッセージ",
       FORM_MOSAIC_NAME_PLACEHOLDER: "モザイク名",
       FORM_ADDRESS_ALIAS_PLACEHOLDER: 'アカウントアドレス 又は @エイリアス名',
+      FORM_BTN_GET_ALIAS: 'エイリアスアドレスを取得',
+      FORM_BTN_OPEN_ADB: 'アドレス張を開く',
+      FORM_SELECT_NAMESPACE: 'ネームスペースを選択する',
 
       // VOTING MODULE
       PORTAL_VOTING_TITLE: 'Voting',
@@ -708,7 +785,86 @@ function JapaneseProvider($translateProvider) {
       FORM_TITLE_FIELD_PLACEHOLDER: 'Title',
       FORM_DESCRIPTION_FIELD_PLACEHOLDER: 'Write your description here',
       FORM_OPTION_FIELD_PLACEHOLDER: 'write option',
-      FORM_WHITELIST_FIELD_PLACEHOLDER: 'account address'
+      FORM_WHITELIST_FIELD_PLACEHOLDER: 'account address',
+      FORM_SELECT_MULTISIG: 'Select a multisignature account',
+      FORM_SELECT_CONTACT: 'Select a contact',
+
+      // TREZOR RELATED
+      TREZOR_TITLE: 'TREZOR',
+      TREZOR_TEXT: 'ハードウェアウォレットのTREZORはXEM、モザイク、マルチシグアカウントを保護できます。',
+      TREZOR_BUTTON: 'TREZORでログイン',
+
+      // CREATE OFFLINE TRANSACTION MODULE
+      OFFLINE_TX_TITLE: 'オフライントランザクションの準備',
+      OFFLINE_TX_NO_WALLET: 'フォームを表示するためにログイン画面からウォレットをインポートしてください。',
+      OFFLINE_TX_INFO_1: '安全性を確保するため、コンピュータがインターネットに<b>接続していない</b>ことを確認してください。',
+      OFFLINE_TX_INFO_2: 'NEMノードからモザイクやマルチシグ情報を取得するにインターネット接続が必要なので、単純なトランザクションだけ作成できます。',
+      OFFLINE_TX_INFO_3: '左側のパネルの"作成"ボタンをクリックすると、下部に署名済みトランザクションが表示されます。',
+      OFFLINE_TX_INFO_4: '署名済みトランザクションは変更不可であり、デフォルト期限の24時間以内にリリースされた場合にだけ有効になります。',
+      OFFLINE_TX_SIGNED: '署名済みトランザクション',
+      OFFLINE_TX_RELEASE: 'リリースモジュールで開く',
+      OFFLINE_TX_MODAL_ALERT: 'このコンピュータはインターネットに接続されているようです。安全にオフライントランザクションを作るために<b>インターネットに接続されていないコンピュータ上だけ</b>で行ってください。',
+
+      // RELEASE OFFLINE TRANSACTION MODULE
+      RELEASE_OFFLINE_TX_TITLE: 'トランザクションをネットワークにリリース',
+      RELEASE_OFFLINE_TX_PARAMETERS: 'トランザクションのパラメータ',
+      RELEASE_OFFLINE_TX_INFO_1: 'トランザクションをリリースするにはインターネットへの接続が必要です。',
+      RELEASE_OFFLINE_TX_INFO_2: '対応するネットワークの稼働中ノードを選択していることを確認してください。間違っている場合は拒否されます。',
+      RELEASE_OFFLINE_TX_INFO_3: '署名済みトランザクションを2度送信することはできません。トランザクションは常に同じハッシュを生成し、2つのトランザクションは同じハッシュを持つことができません。',
+      RELEASE_OFFLINE_TX_INFO_4: '署名済みトランザクションはいかなるコンピュータからでも安全にリリースできます。',
+
+      // INVOICE MODULE
+      CREATE_INVOICE_TITLE: '請求書を作成',
+
+      // CREATE SIGNED MESSAGE MODULE
+      CREATE_SIGNED_MSG_TITLE: "署名済みメッセージの作成",
+      CREATE_SIGNED_MSG_NAME: '署名済みメッセージ',
+      CREATE_SIGNED_MSG_SIGN: 'メッセージに署名',
+
+      // VERIFY SIGNED MESSAGE MODULE
+      VERIFY_SIGNED_MSG_TITLE: "署名済みメッセージの検証",
+      VERIFY_SIGNED_MSG_SIG_VALID: '署名は有効です',
+      VERIFY_SIGNED_MSG_SIG_NOT_VALID: '署名は<b>不正</b>です',
+      VERIFY_SIGNED_MSG_NOT_VALID: '署名済みメッセージが不正です！',
+
+      // DNS MODULE
+      DNS_SHORT_DESC: "namespace.nemドメイン用の分散ドメインネームシステム(DNS)サービス",
+      DNS_CONFIGURE: "DNSの設定",
+      DNS_SEARCH_DNS: "DNSの検索",
+      DNS_GO_SEARCH: "検索",
+      DNS_GET_INFO: "情報取得",
+      DNS_SEARCH_HEADLINE: "DNSの検索",
+      DNS_SEARCH_HELP: "DNSのヘルプ",
+      DNS_SEARCH: "検索",
+      DNS_SEARCH_HELP_INFO: "namespace.nemを入力して関連するDNS情報を参照するか、直接ウェブサイトに移動します。",
+      //DNS CONFIGURE
+      DNS_SELECT_NAMESPACE:"ネームスペースの選択",
+      DNS_POINTER_ADDRESS:"ポインタアドレス",
+      DNS_IP_ADDRESS:"IPアドレス",
+      DNS_ORGA:"組織",
+      DNS_COUNTRY:"国籍",
+      DNS_ADDRESS:"住所",
+      DNS_PHONE:"電話番号",
+      DNS_EMAIL:"Eメール",
+      DNS_OTHERINFO:"その他",
+      DNS_JSONMSG:"JSONメッセージ",
+      DNS_CHAR_LEFT:"残り文字数",
+      DNS_HELP1:"NEMネームスペースの所有者はNEM DNSが簡単な数ステップで使用できます。DNSはNEMエコシステムの名前空間プラットフォームと、関連付けられたポインターアドレス(PA)を中心に構築されています。ネームスペースの所有者は、ネームスペースに関連する情報を使用して、JSON形式の暗号化されていないメッセージを含む、ネームスペースポインタアドレスにトランザクションを送信する必要があります。メッセージには、IPアドレス、所有権情報、物理アドレス、連絡先情報などの関連情報を含めることができます。",
+      DNS_HELP2:"このように使います:",
+      DNS_HELP3:"1. ネームスペースを選ぶ",
+      DNS_HELP4:"2. 関連を書き込むかDNS情報を更新する",
+      DNS_HELP5:"3. ポインタアドレスへトランザクションを送る",
+      //DNS ALERTS
+      ALERT_DNS_SUCCESS: "情報が見つかりました",
+      ALERT_DNS_NO_INFO_FOUND: "DNS情報が見つかりませんでした",
+
+      // IMPORT WALLET QRCODE
+      IMPORT_WALLET_QRCODE_TITLE: 'ウォレットQRコードのインポート',
+      IMPORT_WALLET_QRCODE_INFORMATION: 'サポートしているウォレットQRコード: NEM wechat wallet, ios, android.',
+      IMPORT_WALLET_QRCODE_LOAD: 'ウォレットQRコードを読み込む',
+      IMPORT_WALLET_QRCODE_SCAN: 'スキャン',
+      IMPORT_WALLET_QRCODE_STOP_SCAN: 'スキャン停止'
+
     });
 
 }

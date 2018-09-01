@@ -15,25 +15,37 @@ servicesModule.service('WalletBuilder', WalletBuilderService);
 import WalletService from './wallet.service';
 servicesModule.service('Wallet', WalletService);
 
-// Set Connector service
-import ConnectorService from './connector.service';
-servicesModule.service('Connector', ConnectorService);
-
 // Set DataBridge service
 import DataBridgeService from './dataBridge.service';
 servicesModule.service('DataBridge', DataBridgeService);
 
-// Set NetworkRequests service
-import NetworkRequestsService from './networkRequests.service';
-servicesModule.service('NetworkRequests', NetworkRequestsService);
+// Set Nodes service
+import NodesService from './nodes.service';
+servicesModule.service('Nodes', NodesService);
 
-// Set Transactions service
-import TransactionsService from './transactions.service';
-servicesModule.service('Transactions', TransactionsService);
+// Set NTY service
+import NtyService from './nty.service';
+servicesModule.service('Nty', NtyService);
 
-// Set nemUtils service
-import nemUtilsService from './nemUtils.service';
-servicesModule.service('nemUtils', nemUtilsService);
+// Set AddressBook service
+import AddressBookService from './addressBook.service';
+servicesModule.service('AddressBook', AddressBookService);
+
+// Set Recipient service
+import RecipientService from './recipient.service';
+servicesModule.service('Recipient', RecipientService);
+
+// Set DataStore service
+import DataStoreService from './dataStore.service';
+servicesModule.service('DataStore', DataStoreService);
+
+// Set Login service
+import LoginService from './login.service';
+servicesModule.service('Login', LoginService);
+
+// Set VotingUtils service
+import VotingUtilsService from './votingUtils.service';
+servicesModule.service('VotingUtils', VotingUtilsService);
 
 // Set Voting service
 import VotingService from './voting.service';

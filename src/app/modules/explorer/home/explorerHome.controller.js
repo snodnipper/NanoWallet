@@ -1,45 +1,51 @@
 class ExplorerHomeCtrl {
-    constructor(Wallet, $scope, NetworkRequests, Alert, Transactions, $location, DataBridge) {
+
+    /**
+     * Initialize dependencies and properties
+     *
+     * @params {services} - Angular services to inject
+     */
+    constructor(Wallet, DataStore) {
         'ngInject';
 
-        // Wallet service
+        //// Module dependencies region ////
+
         this._Wallet = Wallet;
-        // Network requests service
-        this._NetworkRequests = NetworkRequests;
-        // Alert service
-        this._Alert = Alert;
-        // Transactions service
-        this._Transactions = Transactions;
-        // DataBridge service
-        this._DataBridge = DataBridge;
-        // $location to redirect
-        this._location = $location;
+        this._DataStore = DataStore;
 
-        // If no wallet show alert and redirect to home
-        if (!this._Wallet.current) {
-            this._Alert.noWalletLoaded();
-            this._location.path('/');
-            return;
-        }
+        //// End dependencies region ////
 
-        this.nsOwnedMultisig = [];
+        //// Module properties region ////
+
+        // Array for multisig namespaces
+        this.multisigNamespaces = [];
+
+        //// End properties region ////
         
-        if(this._DataBridge.accountData.meta.cosignatoryOf.length) {
-            for(let i=0; i < this._DataBridge.accountData.meta.cosignatoryOf.length; i++) {
-                let multisig = this._DataBridge.accountData.meta.cosignatoryOf[i].address;
-                if(undefined !== this._DataBridge.namespaceOwned[multisig]) {
-                    let namesArray = Object.keys(this._DataBridge.namespaceOwned[multisig]);
+        this.arrangeMultisigNamespaces();
+    }
+
+    //// Module methods region ////
+
+    /**
+     * Arrange all multisig namespaces in an array
+     */
+    arrangeMultisigNamespaces() {
+        if(this._DataStore.account.metaData.meta.cosignatoryOf.length) {
+            for(let i=0; i < this._DataStore.account.metaData.meta.cosignatoryOf.length; i++) {
+                let multisig = this._DataStore.account.metaData.meta.cosignatoryOf[i].address;
+                if(undefined !== this._DataStore.namespace.ownedBy[multisig]) {
+                    let namesArray = Object.keys(this._DataStore.namespace.ownedBy[multisig]);
                     for (let k=0; k < namesArray.length; k++) {
-                        let namespace = this._DataBridge.namespaceOwned[multisig][namesArray[k]].fqn
-                        this.nsOwnedMultisig.push(namespace);
+                        let namespace = this._DataStore.namespace.ownedBy[multisig][namesArray[k]].fqn
+                        this.multisigNamespaces.push(namespace);
                     }
                 }
             }
         }
     }
 
-   
-
+    //// End methods region ////
 }
 
 export default ExplorerHomeCtrl;

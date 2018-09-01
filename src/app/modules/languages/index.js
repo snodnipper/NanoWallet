@@ -7,14 +7,17 @@ let app = angular.module('app.lang', ['pascalprecht.translate']);
 import EnglishProvider from './en';
 app.config(EnglishProvider);
 
-/*import FrenchProvider from './fr';
-app.config(FrenchProvider);*/
-
 import ChineseProvider from './cn';
 app.config(ChineseProvider);
 
+import ItalianProvider from './it';
+app.config(ItalianProvider);
+
 import PolishProvider from './pl';
 app.config(PolishProvider);
+
+import PortugueseBRProvider from './ptbr';
+app.config(PortugueseBRProvider);
 
 import GermanProvider from './de';
 app.config(GermanProvider);
@@ -27,6 +30,12 @@ app.config(RussianProvider);
 
 import DutchProvider from './nl';
 app.config(DutchProvider);
+
+import SpanishProvider from './es';
+app.config(SpanishProvider);
+
+import UkrainianProvider from './uk';
+app.config(UkrainianProvider);
 
 // Comment this while developing to see untranslated strings
 app.config(['$translateProvider', function($translateProvider) {

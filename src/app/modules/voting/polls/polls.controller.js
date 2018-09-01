@@ -1,25 +1,17 @@
-import CryptoHelpers from '../../../utils/CryptoHelpers';
+import nem from 'nem-sdk';
 
 class pollsCtrl {
     // Set services as constructor parameter
-    constructor($location, $scope, DataBridge, Alert, Wallet, nemUtils, Voting) {
+    constructor($timeout, DataStore, Alert, Wallet, VotingUtils, Voting) {
         'ngInject';
 
         // Declaring services
-        this._location = $location;
-        this._scope = $scope;
+        this._$timeout = $timeout;
         this._Alert = Alert;
         this._Wallet = Wallet;
         this._Voting = Voting;
-        this._nemUtils = nemUtils;
-        this._DataBridge = DataBridge;
-
-        // If no wallet show alert and redirect to home
-        if (!this._Wallet.current) {
-            this._Alert.noWalletLoaded();
-            this._location.path('/');
-            return;
-        }
+        this._VotingUtils = VotingUtils;
+        this._DataStore = DataStore;
 
         // Results object for the chart library
         this.results = {};
@@ -46,20 +38,20 @@ class pollsCtrl {
         // Default poll Index
         // testnet is -104 and mainnet is 104
         if(this._Wallet.network < 0){
-            this.pollIndexAccount = "TAVGTNCVGALLUPZC4JTLKR2WX25RQM2QOK5BHBKC";
+            this.defaultIndexAccount = "TAVGTNCVGALLUPZC4JTLKR2WX25RQM2QOK5BHBKC";
         }
         else{
-            this.pollIndexAccount = "NAZN26HYB7C5HVYVJ4SL3KBTDT773NZBAOMGRFZB";
+            this.defaultIndexAccount = "NAZN26HYB7C5HVYVJ4SL3KBTDT773NZBAOMGRFZB";
         }
+
+        this.pollIndexAccount = this.defaultIndexAccount;
+
         this.pollIndexPrivate = false;
 
-        this.votingFee = this._nemUtils.getMessageFee("");
+        this.votingFee = this._VotingUtils.getMessageFee("");
 
         // Common
-        this.common = {
-            "password": "",
-            "privateKey": ""
-        };
+        this.common = nem.model.objects.get("common");
 
         // Tags for types
         this.types = ["POI", "WhiteList"];
@@ -95,9 +87,7 @@ class pollsCtrl {
 
         // Info for multisig voting
         // checks if the user is cosignatory of an account, if false the multisig vote tab will not be shown
-        this.isCosignatory = this._DataBridge.accountData.meta.cosignatoryOf.length == 0
-            ? ''
-            : this._DataBridge.accountData.meta.cosignatoryOf[0];
+        this.isCosignatory = this._DataStore.account.metaData.meta.cosignatoryOf.length == 0 ? '' : this._DataStore.account.metaData.meta.cosignatoryOf[0];
         this.multisigAccount = '';
 
         // The address that is inputted on the options tab
@@ -108,9 +98,13 @@ class pollsCtrl {
 
         // List of poll indexes created by the user
         this.createdIndexes = [];
-        this.getCreatedIndexes().then((indexes)=>{
-            this.createdIndexes = indexes;
-        });
+
+        // Below code commented because it sends too many requests if the account has a lot of transactions
+        /*this.getCreatedIndexes().then((indexes)=>{
+            this._$timeout(() => {
+                this.createdIndexes = indexes;
+            });
+        });*/
 
         // for creating indexes
         this.createPrivateIndex = false;
@@ -129,17 +123,11 @@ class pollsCtrl {
             this.voting = false;
             return;
         }
-        // Decrypt/generate private key and check it. Returned private key is contained into this.common
-        if (!CryptoHelpers.passwordToPrivatekeyClear(this.common, this._Wallet.currentAccount, this._Wallet.algo, false)) {
-            this._Alert.invalidPassword();
-            this.voting = false;
-            return;
-        } else if (!CryptoHelpers.checkAddress(this.common.privateKey, this._Wallet.network, this._Wallet.currentAccount.address)) {
-            this._Alert.invalidPassword();
-            this.voting = false;
-            return;
-        }
-        //Get list of addresses from the selected options
+
+        // Get account private key or return
+        if (!this._Wallet.decrypt(this.common)) return this.voting = false;
+
+        // Get list of addresses from the selected options
         var optionAddresses = [];
         var optionStrings = [];
         let allAddresses = this.selectedPoll.options.addresses; //will be null for old format polls
@@ -172,33 +160,41 @@ class pollsCtrl {
         let votes = [];
         for (var i = 0; i < optionAddresses.length; i++) {
             if (this.multisigVote) {
-                votes.push(this._Voting.vote(optionAddresses[i], this.common, this.multisigAccount, "vote for poll " + this.currentPollAddress + ' with option "' + optionStrings[i] + '"').then((data) => {
-                    this.alreadyVoted = 1;
-                    this.voting = false;
-                }).catch((e) => {
-                    this.voting = false;
-                    throw e;
+                votes.push(this._Voting.vote(this.currentPollAddress, optionStrings[i], this.common, this.multisigAccount).then((data) => {
+                    this._$timeout(() => {
+                        this.alreadyVoted = 1;
+                        this.voting = false;
+                    });
                 }));
             } else {
-                votes.push(this._Voting.vote(optionAddresses[i], this.common).then((data) => {
-                    this.alreadyVoted = 1;
-                    this.voting = false;
-                }).catch((e) => {
-                    this.voting = false;
-                    throw e;
+                votes.push(this._Voting.vote(this.currentPollAddress, optionStrings[i], this.common).then((data) => {
+                    this._$timeout(() => {
+                        this.alreadyVoted = 1;
+                        this.voting = false;
+                    });
                 }));
             }
         }
         Promise.all(votes).then((d) => {
-            this._Alert.votingSuccess();
-            this.common.password = '';
-            this._scope.$digest();
+            this._$timeout(() => {
+                this._Alert.votingSuccess();
+                this.common.password = '';
+            });
         }, (e)=>{
-            this.voting = false;
-            throw e;
+            this._$timeout(() => {
+                this.voting = false;
+                this.common.password = '';
+                if (e.data) {
+                    this._Alert.votingUnexpectedError(e.data.message);
+                } else {
+                    this._Alert.votingError();
+                }
+            });
         }).catch((e)=>{
-            this.common.password = '';
-            this.voting = false;
+            this._$timeout(() => {
+                this.common.password = '';
+                this.voting = false;
+            });
         });
     }
 
@@ -208,7 +204,7 @@ class pollsCtrl {
             fromAddress: this._Wallet.currentAccount.address,
             start: 0
         }
-        return this._nemUtils.getTransactionsWithString(this._Wallet.currentAccount.address, "createdPollIndex:", options).then((creationTrans)=>{
+        return this._VotingUtils.getTransactionsWithString(this._Wallet.currentAccount.address, "createdPollIndex:", options).then((creationTrans)=>{
             return creationTrans.map((trans)=>{
                 return trans.transaction.message.replace('createdPollIndex:', '');
             });
@@ -218,19 +214,11 @@ class pollsCtrl {
     // Creates a new poll index (private can be true or false)
     createNewIndex(){
 
-        // Decrypt/generate private key and check it. Returned private key is contained into this.common
-        if (!CryptoHelpers.passwordToPrivatekeyClear(this.common, this._Wallet.currentAccount, this._Wallet.algo, false)) {
-            this._Alert.invalidPassword();
-            this.voting = false;
-            return;
-        } else if (!CryptoHelpers.checkAddress(this.common.privateKey, this._Wallet.network, this._Wallet.currentAccount.address)) {
-            this._Alert.invalidPassword();
-            this.voting = false;
-            return;
-        }
+        // Get account private key or return
+        if (!this._Wallet.decrypt(this.common)) return this.voting = false;
 
-        this._nemUtils.createNewAccount().then((account)=>{
-            this._nemUtils.sendMessage(this._Wallet.currentAccount.address, 'createdPollIndex:'+account.address, this.common);
+        this._VotingUtils.createNewAccount().then((account)=>{
+            this._VotingUtils.sendMessage(this._Wallet.currentAccount.address, 'createdPollIndex:'+account.address, this.common);
             let obj = {
                 private: this.createPrivateIndex
             };
@@ -238,7 +226,7 @@ class pollsCtrl {
                 obj.creator = this._Wallet.currentAccount.address
             }
             let message = "pollIndex:" + JSON.stringify(obj);
-            this._nemUtils.sendMessage(account.address, message, this.common);
+            this._VotingUtils.sendMessage(account.address, message, this.common);
         });
     }
 
@@ -254,18 +242,21 @@ class pollsCtrl {
         this.loadingAddressError = false;
         //check if it is a valid address
         this.inputAccount = this.inputAccount.toUpperCase().replace(/-/g, '');
-        this.inputAddressValid = this._nemUtils.isValidAddress(this.inputAccount);
+        this.inputAddressValid = this._VotingUtils.isValidAddress(this.inputAccount);
         if(!this.inputAddressValid){
             this.inputAddressValid = false;
             this.searching = false;
             return;
         }
         this.getPoll(this.inputAccount).then(()=>{
-            this.searching = false;
+            this._$timeout(() => {
+                this.searching = false;
+            });
         }).catch((e)=>{
-            this.searching = false;
-            this.loadingAddressError = true;
-            this._scope.$digest();
+            this._$timeout(() => {
+                this.searching = false;
+                this.loadingAddressError = true;
+            });
         });
     }
 
@@ -276,13 +267,13 @@ class pollsCtrl {
         this.loadingAddressError = false;
         //check if it is a valid address
         this.inputAccount = this.inputAccount.toUpperCase().replace(/-/g, '');
-        this.inputAddressValid = this._nemUtils.isValidAddress(this.inputAccount);
+        this.inputAddressValid = this._VotingUtils.isValidAddress(this.inputAccount);
         if(!this.inputAddressValid){
             this.inputAddressValid = false;
             this.searching = false;
             return;
         }
-        this._nemUtils.getFirstMessageWithString(this.inputAccount, 'pollIndex:').then((message)=>{
+        this._VotingUtils.getFirstMessageWithString(this.inputAccount, 'pollIndex:').then((message)=>{
             this.pollIndexAccount = this.inputAccount;
             let indexInfo = JSON.parse(message.replace('pollIndex:', ''));
             this.pollIndexPrivate = indexInfo.private;
@@ -292,9 +283,10 @@ class pollsCtrl {
                 throw e;
             });
         }).catch((e)=>{
-            this.searching = false;
-            this.loadingAddressError = true;
-            this._scope.$digest();
+            this._$timeout(() => {
+                this.searching = false;
+                this.loadingAddressError = true;
+            });
         });
     }
 
@@ -314,11 +306,11 @@ class pollsCtrl {
             }
         }
         //no option selected
-        if ((this.selectedOption === "" && this.selectedOptions === [])) {
+        if ((this.selectedOption === "" && this.selectedOptions.length === 0)) {
             issueList.push("No option selected");
         }
         //no passwd
-        if (this.common.password === "") {
+        if (this.common.password === "" && this._Wallet.algo !== 'trezor') {
             issueList.push("No password");
         }
         this.invalidVote = (issueList.length > 0);
@@ -343,59 +335,70 @@ class pollsCtrl {
         this.loadingResults = true;
 
         return this._Voting.pollDetails(address).then((data) => {
-            this.selectedPoll = data;
-            let now = (new Date()).getTime();
-            if (this.selectedPoll.formData.doe < now) {
-                this.pollFinished = true;
-                this.showVote = false;
-            } else {
-                this.pollFinished = false;
-                this.showVote = true;
-            }
-            this.showDetails = true;
-            this.checkValidVote();
-            this.selectedOption = "";
-            this.selectedOptions = [];
+            this._$timeout(() => {
+                this.selectedPoll = data;
+                let now = (new Date()).getTime();
+                if (this.selectedPoll.formData.doe < now) {
+                    this.pollFinished = true;
+                    this.showVote = false;
+                } else {
+                    this.pollFinished = false;
+                    this.showVote = true;
+                }
+                this.showDetails = true;
+                this.checkValidVote();
+                this.selectedOption = "";
+                this.selectedOptions = [];
 
-            this.loadingPoll = false;
-            this.currentPollAddress = address;
-            let resultsPromise;
-            if(now < this.selectedPoll.formData.doe){
-                resultsPromise = this._Voting.getResults(address, this.selectedPoll.formData.type);
-            }
-            else{
-                resultsPromise = this._Voting.getResults(address, this.selectedPoll.formData.type, this.selectedPoll.formData.doe);
-            }
-            resultsPromise.then((data) => {
-                console.log("results->", data);
-                this.results = data;
-                this.chart.values = data.options.map((option) => {
-                    return option.weighted;
-                });
-                this.chart.labels = data.options.map((option) => {
-                    return (option.text + ': ' + option.percentage.toFixed(2) + '%');
-                });
-                this.loadingResults = false;
-            }).then(()=>{
-                this._scope.$digest();
-            }).catch(e=>{});
+                this.loadingPoll = false;
+                this.currentPollAddress = address;
+                let resultsPromise;
+                if(now < this.selectedPoll.formData.doe){
+                    resultsPromise = this._Voting.getResults(address, this.selectedPoll.formData.type);
+                }
+                else{
+                    resultsPromise = this._Voting.getResults(address, this.selectedPoll.formData.type, this.selectedPoll.formData.doe);
+                }
+                resultsPromise.then((data) => {
+                    this._$timeout(() => {
+                        // console.log("results->", data);
+                        this.results = data;
+                        this.chart.values = data.options.map((option) => {
+                            return option.weighted;
+                        });
+                        this.chart.labels = data.options.map((option) => {
+                            return (option.text + ': ' + option.percentage.toFixed(2) + '%');
+                        });
+                        this.loadingResults = false;
+                    });
+                }).then(()=>{
+                    this._$timeout(() => {});
+                }).catch(e=>{});
+            });
         }).then(() => {
-            return this.checkHasVoted();
+            this._$timeout(() => {
+                return this.checkHasVoted();
+            });
         }).then(()=>{
-            this._scope.$digest();
+            this._$timeout(() => {});
         }).catch((e)=>{
-            this.loadingPoll = false;
-            throw e;
+            this._$timeout(() => {
+                this.loadingPoll = false;
+                throw e;
+            });
         });
     }
 
     // selects a poll by the index on the polls list
     pollSelect(index) {
         this.getPoll(this.pollsList[index].address).then(()=>{
-            this.loadingAddressError = false;
+            this._$timeout(() => {
+                this.loadingAddressError = false;
+            });
         }).catch((e)=>{
-            console.log("pollselect");
-            this.loadingAddressError = true;
+            this._$timeout(() => {
+                this.loadingAddressError = true;
+            });
         });
     }
 
@@ -404,15 +407,17 @@ class pollsCtrl {
         this.loadingVote = true;
         if (this.multisigVote) {
             return this._Voting.hasVoted(this.multisigAccount.address, this.selectedPoll).then((resp) => {
-                this.alreadyVoted = resp;
-                this.loadingVote = false;
-                this._scope.$digest();
+                this._$timeout(() => {
+                    this.alreadyVoted = resp;
+                    this.loadingVote = false;
+                });
             });
         } else {
             return this._Voting.hasVoted(this._Wallet.currentAccount.address, this.selectedPoll).then((resp) => {
-                this.alreadyVoted = resp;
-                this.loadingVote = false;
-                this._scope.$digest();
+                this._$timeout(() => {
+                    this.alreadyVoted = resp;
+                    this.loadingVote = false;
+                });
             });
         }
     }
@@ -443,7 +448,7 @@ class pollsCtrl {
             this.showVote = true;
             this.multisigVote = false;
         } else if (tab === 2) {
-            this.multisigAccount = this._DataBridge.accountData.meta.cosignatoryOf[0];
+            this.multisigAccount = this._DataStore.account.metaData.meta.cosignatoryOf[0];
             this.showVote = true;
             this.multisigVote = true;
         } else if (tab === 3) {
@@ -504,7 +509,7 @@ class pollsCtrl {
         } else if (type === 2) {
             let namespace = header.mosaic.split(':')[0];
             let mosaic = header.mosaic.split(':')[1];
-            return (this._nemUtils.ownsMosaic(address, namespace, mosaic));
+            return (this._VotingUtils.ownsMosaic(address, namespace, mosaic));
         }
     }
 
@@ -533,14 +538,18 @@ class pollsCtrl {
         //get all polls
         this.loadingPolls = true;
         return this._Voting.getPolls(this.pollIndexAccount).then((data) => {
-            this.allPolls = data;
-            this.loadingPolls = false;
-            this.setTab(1);
-            // apply filters
-            this.updateList();
+            this._$timeout(() => {
+                this.allPolls = data;
+                this.loadingPolls = false;
+                this.setTab(1);
+                // apply filters
+                this.updateList();
+            });
         }).catch((e)=>{
-            this.loadingPolls = false;
-            throw e;
+            this._$timeout(() => {
+                this.loadingPolls = false;
+                throw e;
+            });
         });
     }
 

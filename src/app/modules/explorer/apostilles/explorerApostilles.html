@@ -11,16 +11,7 @@
     <div class="row">
       <div class="col-md-12">
         <div class="panel-heading">
-          <div class="nav nav-tabs arrows">
-            <div ng-show="$ctrl.sinkData.length > 5">
-              <button class="buttonStyle" ng-disabled="$ctrl.currentPageSink == 0" ng-click="$ctrl.currentPageSink = $ctrl.currentPageSink-1">
-                <span class="fa fa-chevron-left" aria-hidden="true"></span>
-              </button><b>{{$ctrl.currentPageSink+1}}/{{$ctrl.numberOfPagesSink()}}</b>
-              <button class="buttonStyle" ng-disabled="$ctrl.currentPageSink+1 >= $ctrl.numberOfPagesSink()" ng-click="$ctrl.currentPageSink = $ctrl.currentPageSink+1">
-                <span class="fa fa-chevron-right" aria-hidden="true"></span>
-              </button>
-            </div>
-          </div>
+          <paginate data="$ctrl.sinkData" current-page="$ctrl.currentPage" page-size="$ctrl.pageSize"></paginate>
         </div>
         <table class="table table-condensed">
           <thead>
@@ -34,9 +25,9 @@
         </table>
         <table class="table table-condensed">
           <tbody>
-            <tr ng-repeat="tx in $ctrl.sinkData | startFrom:$ctrl.currentPageSink*$ctrl.pageSizeSink | limitTo:$ctrl.pageSizeSink">
+            <tr ng-repeat="tx in $ctrl.sinkData | startFrom:$ctrl.currentPage*$ctrl.pageSize | limitTo:$ctrl.pageSize">
               <td>
-                <a ui-sref="app.accountsExplorer({address: (tx.transaction.signer | fmtPubToAddress:$ctrl._Wallet.network), privateKey: ''})">{{tx.transaction.signer | fmtPubToAddress:$ctrl._Wallet.network}}</a></td>
+                <a ui-sref="app.accountsExplorer({address: (tx.transaction.signer | fmtPubToAddress:$ctrl._Wallet.network)})">{{tx.transaction.signer | fmtPubToAddress:$ctrl._Wallet.network | fmtAddress}}</a></td>
               <td>
                 <span ng-show="tx.transaction.type === 257">
                   {{ tx.transaction.message.payload }}

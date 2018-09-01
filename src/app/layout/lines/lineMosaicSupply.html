@@ -1,4 +1,4 @@
-<table id="MDSTable" class="table table-bordered table-hover" title="{{ 'MOSAIC_SUPPLY_CHANGE_NAME' | translate }}" style="cursor:pointer;outline:0;margin-bottom:0;table-layout:fixed" ng-click="displayTransactionDetails(parent, tx, meta)">
+<table id="MDSTable" class="table table-bordered table-hover" title="{{ 'MOSAIC_SUPPLY_CHANGE_NAME' | translate }}" style="cursor:pointer;outline:0;margin-bottom:0;table-layout:fixed">
     <tbody style="outline:0;" class="text-center">
         <tr data-toggle="collapse" data-target="#MDStable{{number}}">
             <td class="sentTx" style="overflow:hidden;text-overflow: ellipsis;"><span class="fa fa-th-large text-danger" ng-show="!parent"></span> <span class="fa fa-group text-danger" ng-show="parent"></span> <tt>{{ 'LINE_TX_DETAILS_MOS_EDIT' | translate }} <span class="text-muted">{{tx.mosaicId.namespaceId}}</span>:<strong>{{tx.mosaicId.name}}</strong>"</tt></td>
@@ -7,7 +7,13 @@
                     <span style="color:red">-</span> <strong>{{((tx.fee) | fmtNemValue)[0]}}</strong>.<span class="text-muted">{{((tx.fee) | fmtNemValue)[1]}}</span> XEM
                 </span>
                 <span ng-show="parent">
-                    <span style="color:red">-</span> <strong>{{((tx.fee+parent.fee) | fmtNemValue)[0]}}</strong>.<span class="text-muted">{{((tx.fee+parent.fee) | fmtNemValue)[1]}}</span> XEM
+                    <span style="color:red">-</span>
+                    <span ng-show="parent.signatures.length">
+                        <strong>{{((tx.fee+((parent.signatures.length + 1) * parent.fee)) | fmtNemValue)[0]}}</strong>.<span class="text-muted">{{((tx.fee+((parent.signatures.length + 1) * parent.fee)) | fmtNemValue)[1]}}</span>
+                    </span>
+                    <span ng-show="!parent.signatures.length">
+                        <strong>{{((tx.fee+parent.fee) | fmtNemValue)[0]}}</strong>.<span class="text-muted">{{((tx.fee+parent.fee) | fmtNemValue)[1]}}</span>
+                    </span>
                 </span>
                 <div ng-show="needsSignature">
                     <span style="color:red">{{ 'LINE_TX_DETAILS_NEED_SIG_2' | translate }}</span>
@@ -69,7 +75,8 @@
 
         <div class="row" ng-show="parent">
                 <div class="col-sm-3"><b>{{ 'LINE_TX_DETAILS_MULTISIG_FEE' | translate }}</b></div>
-                <div class="col-sm-9">{{(parent.fee | fmtNemValue)[0]}}.<span class="text-muted">{{(parent.fee | fmtNemValue)[1]}}</span> XEM</div>
+                <div class="col-sm-9" ng-show="!parent.signature.length">{{(parent.fee | fmtNemValue)[0]}}.<span class="text-muted">{{(parent.fee | fmtNemValue)[1]}}</span> XEM</div>
+                <div class="col-sm-9" ng-show="parent.signature.length">{{(((parent.signatures.length + 1) * parent.fee) | fmtNemValue)[0]}}.<span class="text-muted">{{(((parent.signatures.length + 1) * parent.fee) | fmtNemValue)[1]}}</span> XEM</div>
             </div>
 
         <div class="row">
@@ -155,13 +162,6 @@
 
     </div>
 
-    <div style="padding: 5px 30px;background-color: rgb(65, 191, 118);" ng-show="needsSignature">
-        <div class="input-group">
-            <input type="password" class="form-control ng-valid ng-touched ng-dirty ng-valid-parse" ng-model="walletScope.common.password" id="passwordDecoding" placeholder="{{'FORM_PASSWORD_FIELD_PLACEHOLDER' | translate }}" aria-invalid="false">
-            <span class="input-group-btn">
-                <button class="btn btn-default" style="color: white; border-radius: 0px; border-color:#444;" type="button" ng-click="walletScope.cosign(parent, tx, meta)">{{ 'LINE_TX_DETAILS_COSIGN' | translate }}</button>
-            </span>
-        </div>
-    </div>
+    <sign-transaction tx="tx" parent-tx="parent" meta="meta" needs-signature="needsSignature"></sign-transaction>
 
 </div>

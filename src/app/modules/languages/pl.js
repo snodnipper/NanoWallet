@@ -27,7 +27,9 @@ function PolishProvider($translateProvider) {
         HEADER_NODE_CUSTOM_TOOLTIP: 'Dodaj własny serwer NIS',
         HEADER_PURGE: 'Wyczyść',
         HEADER_PURGE_MESSAGE: 'Proszę potwierdzić czyszczenie pamięci przeglądarki. Po wciśnięciu "OK" wszystkie portfele w lokalnej pamięci zostaną usunięte i nie będzie można ich odzyskać. Zgadzasz się z tym, że posiadasz kopie zapasowe portfeli i że fundusze są zabezpieczone.',
-
+        HEADER_OFFLINE_TX: 'Prepare an offline transaction',
+        HEADER_RELEASE_TX: 'Release a transaction',
+        
         // FOOTER COMPONENT
         FOOTER_POWERED_BY_1: 'Zasilany',
         FOOTER_POWERED_BY_2: 'technologią NEM.',
@@ -151,10 +153,22 @@ function PolishProvider($translateProvider) {
         GENERAL_WARNING: 'Warning',
         GENERAL_SCORE: 'Score',
         GENERAL_LENGTH: 'Length',
+        GENERAL_GO_BACK: 'Go back',
+        GENERAL_NEXT: 'Next',
+        GENERAL_START: 'Start',
+        GENERAL_ALIAS: 'Alias',
+        GENERAL_CONTACTS: 'Contacts',
+        GENERAL_ENCRYPTED: 'Encrypted',
+        GENERAL_UNENCRYPTED: 'Unencrypted',
+        GENERAL_HEXADECIMAL: 'Hexadecimal',
+        GENERAL_SELECT_ACCOUNT: 'Select account',
+        GENERAL_INVOICE: 'Invoice',
 
         // HOME MODULE
         HOME_UNSUPPORTED_BROWSER: 'Przykro nam, ale nie możesz bezpiecznie użyć Nano Wallet\'a za pomocą tej przeglądarki...',
         HOME_RECOMMENDED_BROWSERS: 'Lista rekomendowanych przeglądarek:',
+        HOME_FEATURE_STAND_BY: 'Place the cursor on a feature to show information.',
+        HOME_FEATURE_1: 'Send and receive XEM easily and almost instantly, only 1 minute block time !',
 
         // TRANSFER TRANSACTION MODULE
         TRANSFER_TRANSACTION_TITLE: 'Wyślij / Odbierz',
@@ -167,9 +181,10 @@ function PolishProvider($translateProvider) {
         TRANSFER_TRANSACTION_ATTACH: 'Załącz',
         TRANSFER_TRANSACTION_MOSAICS_ATTACHED: 'Załączone mozaiki',
         TRANSFER_TRANSACTION_ENCRYPT_MESSAGE: 'Szyfruj wiadomość',
-        TRANSFER_TRANSACTION_HEX_MESSAGE: 'Hex message',
+        TRANSFER_TRANSACTION_MESSAGE_TYPE: 'Message type',
+        /*TRANSFER_TRANSACTION_HEX_MESSAGE: 'Hex message',
         TRANSFER_TRANSACTION_ENCRYPT_TOOLTIP: 'Odbiorca nie ma klucza publicznego widocznego w sieci.',
-        TRANSFER_TRANSACTION_ENCRYPT_TOOLTIP_MULTISIG: 'Brak zaszyfrowanych wiadomości przez konta z multipodpisem.',
+        TRANSFER_TRANSACTION_ENCRYPT_TOOLTIP_MULTISIG: 'Brak zaszyfrowanych wiadomości przez konta z multipodpisem.',*/
 
         // TRANSACTION LINES
         LINE_TX_DETAILS_FROM: 'Od',
@@ -177,7 +192,7 @@ function PolishProvider($translateProvider) {
         LINE_TX_DETAILS_WAITING: 'Transakcja czeka na włączenie do bloku',
         LINE_TX_DETAILS_NEED_SIG: 'Potrzeba podpisów sygnatariuszy',
         LINE_TX_DETAILS_NEED_SIG_2: 'Ta transakcja wymaga twojego podpisu',
-        LINE_TX_DETAILS_MESS_ENC: 'Zaszyfrowane',
+        //LINE_TX_DETAILS_MESS_ENC: 'Zaszyfrowane',
         LINE_TX_DETAILS_MESS_DEC: 'Odszyfruj',
         LINE_TX_DETAILS_HASH: 'Hasz',
         LINE_TX_DETAILS_DEC_MESS: 'Odszyfruj wiadomość',
@@ -223,13 +238,13 @@ function PolishProvider($translateProvider) {
         IMPORTANCE_TRANSFER_REMOTE_ACTIVATING: 'Musisz zaczekać, aż zdalny status będzie aktywny, aby rozpocząć delegowane zbieranie.',
         IMPORTANCE_TRANSFER_REMOTE_INACTIVE: 'Musisz wysłać transakcję transferu znaczenia z lewego panelu, aby aktywować swoje zdalne konto',
         IMPORTANCE_TRANSFER_MULTISIG_NOT_INITIATOR: 'Nie jesteś sygnatariuszem, który zainicjował transfer przeniesienia znaczenia, dlatego nie możesz uruchomić lub zatrzymać delegowanego zbierania bloków. Proszę przeczytaj powyżej jak przejąć spowrotem kontrolę nad zbieraniem.',
-        IMPORTANCE_TRANSFER_MULTISIG_SELECT: 'Wybierz konto z multipodpisem',
-        IMPORTANCE_TRANSFER_MULTISIG_SELECT_MESSAGE: 'Wybierz konto z multipodpisem aby zobaczyć status',
         IMPORTANCE_TRANSFER_PRIVATE_KEY_PLACEHOLDER: 'Odsłoń delegowany klucz prywatny.',
         IMPORTANCE_TRANSFER_DELEGATED_KEYS: 'Klucze konta delegowanego.',
         IMPORTANCE_TRANSFER_HARVESTING_STATUS: 'Status zbierania',
         IMPORTANCE_TRANSFER_START_HARVESTING: 'Zacznij delegowane zbieranie.',
         IMPORTANCE_TRANSFER_STOP_HARVESTING: 'Zakończ delegowane zbieranie.',
+        IMPORTANCE_TRANSFER_ACTIVATE_DEACTIVATE_REMOTE: 'Activate / Deactivate the delegated account',
+        IMPORTANCE_TRANSFER_SHOW_DELEGATED_KEYS: 'Show delegated account keys',
 
         // CREATE MOSAIC MODULE
         MOSAIC_DEFINITION_TITLE: 'Utwórz mozaikę',
@@ -275,6 +290,7 @@ function PolishProvider($translateProvider) {
         MOSAIC_DEFINITION_INFORMATION_14: 'Opłata jest określona jako stała, a więc nie jest uzależniona od ilości mozaiki, która jest przekazywana.',
         MOSAIC_DEFINITION_INFORMATION_15: 'Opłata jest określona jako iloczn oprocentowania i transferowanej ilości. Wobc tego opłata wzrasta liniowo wraz z ilością transferowanej mozaiki.',
         MOSAIC_DEFINITION_INFORMATION_16: 'Wysyłanie mozaiki na blockchainie NEM wymaga opłaty. Dokładna wartość opłaty jest obliczana w zależności od ich łącznej liczby i ilości wysyłanej podczas transakcji. <b>Mozaiki małych firm</b> otrzymują tańszą, stałą stawkę 0.05 XEM za transfer mozaiki. To mozaiki z ilością mniejszą niż 10 000 i podzielnością 0.',
+        MOSAIC_DEFINITION_INFORMATION_17: 'If you own 100% of the supply, you can overwrite all the mosaic properties by sending a creation transaction again with the same "namespace:mosaic" name.',
 
         // EDIT MOSAIC MODULE
         MOSAIC_SUPPLY_CHANGE_TITLE: 'Zmień ilość mozaiki',
@@ -382,6 +398,7 @@ function PolishProvider($translateProvider) {
         PORTAL_APOSTILLE_BTN_2: 'Audytuj',
         PORTAL_ADDRESS_BOOK_TEXT: 'Przydziel etykiety do adresu\' by prosto zarządzać swoimi kontaktami.',
         PORTAL_ADDRESS_BOOK_BTN: 'Zarządzaj książką adresową',
+        PORTAL_INVOICE_TEXT: 'Create an invoice to share via QR code',
 
         // ADDRESS BOOK MODULE
         ADDRESS_BOOK_TITLE: 'Książka adresowa',
@@ -483,8 +500,8 @@ function PolishProvider($translateProvider) {
         //APOSTILLE_AUDIT_NON_SIGNED: 'Niepodpisany przykład:',
         //APOSTILLE_AUDIT_SIGNED: 'Podpisany przykład:',
         APOSTILLE_AUDIT_FILES: 'Audytuj pliki',
-        APOSTILLE_AUDIT_FORMAT_EXAMPLE: 'Apostille Format Example',
-        APOSTILLE_AUDIT_REMOVE_RECORDS: 'Remove Records Locally',
+        APOSTILLE_AUDIT_FORMAT_EXAMPLE: 'Apostille format example',
+        APOSTILLE_AUDIT_REMOVE_RECORDS: 'Remove records locally',
 
         // APOSTILLE MESSAGE MODULE
         APOSTILLE_MESSAGE_TITLE: 'Wyślij wiadomość do konta notaryzującego.',
@@ -568,6 +585,13 @@ function PolishProvider($translateProvider) {
         ALERT_NODE_SEEMS_OFFLINE: 'Node seems offline, please select another one',
         ALERT_WEAK_PASSPHRASE: 'Security score of the passphrase must be at least 3',
         ALERT_BRAIN_WALLET_UPGRADE: 'Your brain wallet seems weak ! All brain wallets must use a passphrase with at least 40 characters.<br> We advise you to create a new wallet from the signup page and move your funds into it.<br> More info <a href="https://forum.nem.io/t/2791" target="_blank"><u>here</u></a>.',
+        ALERT_RECIPIENT_PUBLIC_KEY: 'Recipient has no public key visible to the network',
+        ALERT_ENCRYPT_MULTISIG: 'Can\'t send encrypted messages via multisig accounts',
+        ALERT_EXCHANGE_NEEDS_MESSAGE: 'Recipient is an exchange wallet and thus it requires a message for your account to be correctly credited, please read carefully the exchange deposit instructions!',
+        ALERT_ACCOUNT_ALREADY_IN_ADDRESS_BOOK: 'Contact already present in address book!',
+        ALERT_MAX_MOSAIC_SUPPLY: 'Maximum mosaic supply is 9\'000\'000\'000',
+        ALERT_GET_MOSAIC_SUPPLY_ERROR: 'Error at fetching mosaic supply, reason: ',
+        ALERT_ENCRYPTED_MSG_OFFLINE: 'Encrypted messaging is not enabled in offline transactions',
 
         // SUCCESS ALERTS
         ALERT_CREATE_WALLET_SUCCESS: 'Portfel utworzony i załadowany !',
@@ -583,6 +607,7 @@ function PolishProvider($translateProvider) {
         ALERT_ADDRESS_BOOK_FILE_SUCCESS: 'Książka adresowa została zaimportowana !',
         ALERT_VOTING_SUCCESS: 'Vote Sent Successfully',
         ALERT_POLL_CREATION_SUCCESS: 'Poll Created Successfully',
+        ALERT_COPY_SIGNED_TX_SUCCESS: 'Signed transaction copied!',
 
         // CONVERT ACCOUNT TO MULTISIG
         AGGREGATE_MODIFICATION_TITLE: 'Zamień konto na konto z multipodpisem',
@@ -610,6 +635,8 @@ function PolishProvider($translateProvider) {
         AGGREGATE_SELECTED_ACCOUNT_INFO: 'Informacja o wybranym koncie',
         AGGREGATE_MIN_SIGNATURES: 'Minimum sygnatur',
         AGGREGATE_SELECT_WALLET_ACCOUNT: 'Użyj portfela konta',
+        AGGREGATE_ADD_COSIG: 'Add cosignatory',
+        AGGREGATE_REMOVE_COSIG: 'Remove cosignatory',
 
         // SIGN MULTISIGNATURE TRANSACTIONS
         SIGN_MULTISIG_TRANSACTIONS_TITLE: 'Zatwierdź transakcję z multipodpisem',
@@ -623,19 +650,39 @@ function PolishProvider($translateProvider) {
         LOGIN_SELECT_WALLET_YOURS: 'Wybierz Portfel',
         LOGIN_SELECT_WALLET: 'Wybierz portfel w lokalnej pamięci',
         LOGIN_LOGIN_BUTTON: 'Zaloguj',
+        LOGIN_NOTE: 'No wallet? Import one or <a href="#!/signup">signup</a>.',
 
         // SIGNUP MODULE
         SIGNUP_TITLE: 'Nowy w NEM ?',
+        SIGNUP_SELECT_WALLET_TYPE: 'Select a type of wallet to create',
+        SIGNUP_SELECT_WALLET_TYPE_STAND_BY: 'Place the cursor on a wallet type to show information.',
         SIGNUP_CREATE_WALLET_TITLE: 'Prosty portfel',
+        SIGNUP_CREATE_WALLET_INFO: 'Simple wallets contains a primary private key that is generated randomly.',
         SIGNUP_PRIVATE_KEY_WALLET_TITLE: 'Portfel z klucza prywatnego',
+        SIGNUP_PRIVATE_KEY_WALLET_INFO: 'Private key wallets contains a primary private key that you want to import.',
         SIGNUP_BRAIN_WALLET_TITLE: 'Brain wallet',
+        SIGNUP_BRAIN_WALLET_INFO: 'Brain wallets contains a primary private key that is generated from a passphrase. This allow to retrieve the wallet only by knowing that exact passphrase.',
         SIGNUP_CREATE_WALLET_BUTTON: 'Utwórz prosty portfel',
         SIGNUP_PRIVATE_KEY_WALLET_BUTTON: 'Utwórz portfel z klucza prywatnego',
         SIGNUP_BRAIN_WALLET_BUTTON: 'Utwórz brain wallet',
         SIGNUP_CREATE_WALLET_WARNING: 'Proszę, przeczytaj o <a href="https://www.w3.org/TR/2014/WD-WebCryptoAPI-20140325/#RandomSource-interface" rel="nofollow" target="_blank">niebezpieczeństwach</a> związanych z własnoręcznie generowanymi kluczami, nie jesteśmy odpowiedzialni za ewentualne straty, które mogłyby być spowodowane entropią generowania kluczy. Mimo, że szansa na to jest bardzo mała, zaleca się użycie klucza prywatnego generowanego przez klienta NEM.',
-        SIGNUP_NETWORK_SELECT: 'Wybierz sieć', //
+        SIGNUP_NETWORK_SELECT: 'Wybierz sieć',
+        SIGNUP_NETWORK_MAINNET: 'Mainnet is the <b><u>real</u></b> NEM network. Addresses start with \'N\'.',
+        SIGNUP_NETWORK_TESTNET: 'Testnet is the <b><u>test</u></b> network. Addresses start with \'T\'.',
+        SIGNUP_NETWORK_MIJIN: 'Mijin is the private version of NEM. Addresses start with \'M\'.',
         SIGNUP_BRAIN_WALLET_WARNING: 'Proszę, przeczytaj o <a href="https://en.bitcoin.it/wiki/Brainwallet" rel="nofollow" target="_blank">niebezpieczeństwach</a> związanych z używaniem brain wallet. Brain wallet używa tylko zakodowanego wielokrotnie hasła, dlatego istotne jest, aby wybrać BEZPIECZNE hasło. <a href="https://xkcd.com/936/" rel="nofollow" target="_blank">XKCD #936</a>',
         SIGNUP_PRIVATE_KEY_WALLET_WARNING: 'Portfel z klucza prywatnego używa TYLKO wielokrotnie zakodowanego hasła, dlatego istotne jest, aby wybrać BEZPIECZNE hasło.',
+        SIGNUP_CREATE_START_WARNING: 'Please, follow each step carefully!',
+        SIGNUP_CREATE_START_CONNECTION_WARNING: 'It is recommended to disconnect from internet while creating your wallet and backing up your data.',
+        SIGNUP_CREATE_READY_BTN: 'Ready',
+        SIGNUP_CREATE_ENTER_NAME: 'Enter a wallet name',
+        SIGNUP_CREATE_ENTER_PASSWORD: 'Enter a password',
+        SIGNUP_CREATE_ENTER_PASSPHRASE: 'Enter a passphrase',
+        SIGNUP_CREATE_CONFIRM_PASSWORD: 'Confirm above password',
+        SIGNUP_CREATE_CONFIRM_PASSPHRASE: 'Confirm above passphrase',
+        SIGNUP_CREATE_ENTER_PRIVATE_KEY: 'Enter a private key',
+        SIGNUP_CREATE_ADDRESS_FROM_PK: 'Address corresponding to above key',
+        SIGNUP_CREATE_WALLET_ADD_ENTROPY_INFO: 'We are now going to generate your primary private key. <b>Please click on start and move your cursor around to add more entropy.</b>',
         SIGNUP_COMMON_WALLET_WARNING_TITLE: 'Ostrzeżenie o bezpieczeństwie konta',
         SIGNUP_COMMON_WALLET_WARNING_1: 'Portfele są przechowywane <b><u>tymczasowo</u></b> W lokalnej pamięci przeglądarki! Przeglądarki mogą zostać skonfigurowane (np. przez wtyczki) do regularnego czyszczenia pamięci lokalnej. Może to prowadzić do bezpowrotnej utraty danych. W danym przypadku portfele zostaną stracone dlatego bardzo ważne jest posiadanie wszystkich informacji wymaganych do odtworzenia portfeli.',
         SIGNUP_COMMON_WALLET_WARNING_2: 'Po stworzeniu portfela powinno się pobrać plik. Ten <b><i>.wlt</i></b> plik służy jako kopia zapasowa i można zaimportować z niego portfel w razie gdy pamięć lokalna przeglądarki zostanie wyczyszczona.',
@@ -644,13 +691,15 @@ function PolishProvider($translateProvider) {
         SIGNUP_COMMON_WALLET_WARNING_5: 'Na użytkowniku leży odpowiedzialność posiadania kopii klucza prywatnego przed zdeponowaniem środków na koncie.',
         SIGNUP_COMMON_WALLET_WARNING_6: 'Każdy portfel posiada <b><u>główny klucz prywatny</u></b> (Twój znajduje się powyżej), który służy do stworzenia zależnych kont podrzędnych (BIP32). Ta cecha wymaga użycia <b><u>tego samego hasła</u></b> lub wygeneruje ona inne konta podrzędne dla tego samego klucza prywatnego. Podczas tworzenia kopii zapasowej danych nie zapomnij <b><u>zanotować swojego hasła</u></b>.',
         SIGNUP_COMMON_WALLET_WARNING_BTN_1: 'Pokaż czysty plik portfela',
-        SIGNUP_COMMON_WALLET_WARNING_BTN_1_INFO: 'By stworzyć plik portfela, utwórz pusty plik tekstowy i skopiuj do niego powyższy klucz base 64. <br>Zapisz plik jako <b><i>Twoja_nazwa_porfela.wlt</i></b> by był możliwy do zaimportowania.',
+        SIGNUP_COMMON_WALLET_WARNING_BTN_1_INFO: 'By stworzyć plik portfela, utwórz pusty plik tekstowy i skopiuj do niego powyższy klucz base 64. Zapisz plik jako <b><i>Twoja_nazwa_porfela.wlt</i></b> by był możliwy do zaimportowania.',
         SIGNUP_COMMON_WALLET_WARNING_BTN_2: 'Pokaż klucz prywatny',
-        SIGNUP_COMMON_WALLET_WARNING_BTN_2_INFO: 'By stworzyć kopię zapasową klucza prywatnego, zapisz go w pliku tekstowym, wydrukuj lub zapisz na kartce. <br>Sugerowane jest przechowywanie klucza prywatnego offline.',
+        SIGNUP_COMMON_WALLET_WARNING_BTN_2_INFO: 'By stworzyć kopię zapasową klucza prywatnego, zapisz go w pliku tekstowym, wydrukuj lub zapisz na kartce. Sugerowane jest przechowywanie klucza prywatnego offline.',
         SIGNUP_COMMON_WALLET_WARNING_FOOTER: 'Kliknięcie poniżej stanowi potwierdzenie przeczytania i zrozumienia powyższych ostrzeżeń.',
         SIGNUP_COMMON_WALLET_WARNING_CONFIRM_1: 'Posiadam plik portfela',
         SIGNUP_COMMON_WALLET_WARNING_CONFIRM_2: 'Posiadam klucz prywatny',
         SIGNUP_COMMON_WALLET_WARNING_CONFIRM_3: 'Zgadzam się',
+        SIGNUP_COMMON_WALLET_WARNING_UNDERSTOOD: 'Understood',
+        SIGNUP_COMMON_WALLET_WARNING_DOWNLOAD: 'Download wallet',
         SIGNUP_ESTIMATED_PASSPHRASE_STRENGTH: 'Estimated passphrase strength',
         SIGNUP_ESTIMATED_GUESS_TIMES: 'Estimated guess times',
 
@@ -670,12 +719,24 @@ function PolishProvider($translateProvider) {
         FAQ_ANSWER_6_FORUM: 'Oficjalne forum',
         FAQ_ANSWER_6_WEBSITE: 'Oficjalna strona',
         FAQ_ANSWER_6_BTT: 'Oficjalny wątek BitcoinTalk',
-        FAQ_QUESTION_7: 'Jak wspierać projekt ?',
-        FAQ_ANSWER_7: 'Nano Wallet jest wspierany przez Quantum_Mechanics i bazuje na portfelu lightwallet użytkownika Gimre',
-        FAQ_ANSWER_7_2: 'Apostille jest usługą współpracującą ze stroną <a href="http://apostille.io">apostille.io</a> we współpracy z Jabo38 w <a href="https://forum.nem.io/t/nem-apostille-a-nem-notary-system-community-fund-proposal/2001" target="_blank">projekcie Apostille</a>.',
-        FAQ_ANSWER_7_3: 'Jeśli chcesz pomóc finansowo, poniżej znajdują się adresy do wpłaty, dzięki :)',
-        FAQ_ANSWER_7_4: 'Fundusze projektu NanoWallet:',
-        FAQ_ANSWER_7_5: 'Fundusze usług Apostille:',
+        FAQ_QUESTION_7: 'Nothing is shown on the dashboard',
+        FAQ_ANSWER_7: 'Please be sure to check the node circle in the top navigation bar. <br> Red circle means that connection to the node failed. <br> Click on "Node" and select another one from the dropdown list or use a custom node. <br> <a href="https://supernodes.nem.io" target="_blank">Supernodes.nem.io</a> has a lot of nodes that you can use.</a>',
+        FAQ_QUESTION_8: 'Cosignatories cannot see the transaction to sign',
+        FAQ_ANSWER_8: 'In this case go to "Services", look for "Multisignature and Multi-User Accounts" and click on "Sign multisig transactions".',
+        FAQ_QUESTION_9: 'What are the best security practices ?',
+        FAQ_ANSWER_9: 'It is hightly recommended to always store private keys on paper.<br> You can print them and archive them somewhere safe. <br><br> Regarding wallet files you should always keep multiple copies on different cold locations, like usb sticks. <br> Passwords must always be unique and complex, for this reason, always write it down first. <br><br> When you want to check your wallet or realise operations:<br> - Plug the usb stick <br> - Import the wallet in Nano<br> - Unplug the usb stick.<br><br> A copy of your wallet is stored in the browser local storage for all the time you need.<br> Once you are done, logout and purge the wallets in local storage using the purge button on the right side of the footer.',
+        FAQ_QUESTION_10: 'Where to find information about my account (address, etc) ?',
+        FAQ_ANSWER_10: 'If you look at the top navigation bar, you will see an <b><i>"Account"</b></i> button between <b><i>"Node"</b></i> and <b><i>"Language"</b></i>. There you can find your address, public key, vested balance and other important data.',
+        FAQ_QUESTION_11: 'I have deposited XEM to an exchange but nothing has been credited ?',
+        FAQ_ANSWER_11_1: 'First you must check that the hash of your transaction is pointing to an existing transaction on the <a target="_blank" href="http://chain.nem.ninja">explorer</a> (please, note that the explorer is a few blocks behind).',
+        FAQ_ANSWER_11_2: 'Most exchanges are asking for an identification message to credit your deposit. Make sure that you have followed carefully the exchange instructions and added a message that is NOT encrypted. ',
+        FAQ_ANSWER_11_3: 'Even if you have added a message, it can happen that exchanges may not process your deposit, because of issues on their side.',
+        FAQ_ANSWER_11_4: 'You must contact the exchange support, explain the situation and provide them the hash of the transaction.',
+        FAQ_QUESTION_12: 'How to check if I am on a fork ?',
+        FAQ_ANSWER_12_1: 'Click on <b><i>"Node"</b></i>, in the top navigation bar, to open the node panel.',
+        FAQ_ANSWER_12_2: 'Look at the chain height and compare it to the height shown <a target="_blank" href="http://bigalice3.nem.ninja:7890/chain/height">here</a>.',
+        FAQ_ANSWER_12_3: 'If different of more than 5 blocks then you are probably on a fork.',
+        FAQ_ANSWER_12_4: 'To fix, just choose another node from the dropdown in the node panel, it will restore your account at it\'s latest state on the real network.',
 
         // FORM RELATED
         FORM_PASSWORD_FIELD_PLACEHOLDER: 'Wpisz hasło portfela lub hasło wielowyrazowe',
@@ -700,6 +761,9 @@ function PolishProvider($translateProvider) {
         FORM_MESSAGE_PLACEHOLDER: 'Wiadomość',
         FORM_MOSAIC_NAME_PLACEHOLDER: 'Nazwa mozaiki',
         FORM_ADDRESS_ALIAS_PLACEHOLDER: 'Adres konta lub @alias',
+        FORM_BTN_GET_ALIAS: 'Get alias address',
+        FORM_BTN_OPEN_ADB: 'Open address book',
+        FORM_SELECT_NAMESPACE: 'Select a namespace',
 
         RENEW_NS_TITLE: 'Odnów namespace',
         RENEW_NS_NONE: 'Brak namespace do odnowienia',
@@ -717,7 +781,30 @@ function PolishProvider($translateProvider) {
         FORM_TITLE_FIELD_PLACEHOLDER: 'Title',
         FORM_DESCRIPTION_FIELD_PLACEHOLDER: 'Write your description here',
         FORM_OPTION_FIELD_PLACEHOLDER: 'write option',
-        FORM_WHITELIST_FIELD_PLACEHOLDER: 'account address'
+        FORM_WHITELIST_FIELD_PLACEHOLDER: 'account address',
+        FORM_SELECT_MULTISIG: 'Select a multisignature account',
+        FORM_SELECT_CONTACT: 'Select a contact',
+
+        // CREATE OFFLINE TRANSACTION MODULE
+        OFFLINE_TX_TITLE: 'Prepare an offline transaction',
+        OFFLINE_TX_NO_WALLET: 'Please import a wallet from login module to see the form.',
+        OFFLINE_TX_INFO_1: 'Make sure to be disconnected of internet when importing your wallet and creating the transaction!',
+        OFFLINE_TX_INFO_2: 'Only simple transactions can be created because a connection is needed to fetch mosaics and multisig information from NEM nodes.',
+        OFFLINE_TX_INFO_3: 'After clicking the "create" button in the left panel, you will find the signed transaction below.',
+        OFFLINE_TX_INFO_4: 'A signed transaction is immutable and will be effective only if released to the network before the default deadline of 24 hours.',
+        OFFLINE_TX_SIGNED: 'Signed transaction',
+        OFFLINE_TX_RELEASE: 'Open in release module',
+
+        // RELEASE OFFLINE TRANSACTION MODULE
+        RELEASE_OFFLINE_TX_TITLE: 'Release a transaction to the network',
+        RELEASE_OFFLINE_TX_PARAMETERS: 'Transaction parameters',
+        RELEASE_OFFLINE_TX_INFO_1: 'To release a transaction you must be connected to internet.',
+        RELEASE_OFFLINE_TX_INFO_2: 'Make sure that you have selected the right network and a working node or it will be rejected.',
+        RELEASE_OFFLINE_TX_INFO_3: 'It is not possible to send a signed transaction twice. One signed transaction will always generate the same hash and two transactions cannot have the same hash.',
+        RELEASE_OFFLINE_TX_INFO_4: 'You can release a signed transaction from any computer safely.',
+
+        // INVOICE MODULE
+        CREATE_INVOICE_TITLE: 'Create an invoice'
     });
 
 }

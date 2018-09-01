@@ -1,27 +1,26 @@
-import helpers from '../../../utils/helpers';
+import nem from 'nem-sdk';
 
 class ExplorerNamespacesMosaicsCtrl {
-    constructor(Wallet, NetworkRequests, Alert, $location, $filter, DataBridge) {
+
+    /**
+     * Initialize dependencies and properties
+     *
+     * @params {services} - Angular services to inject
+     */
+    constructor(Wallet, Alert, $filter, DataStore, $timeout) {
         'ngInject';
 
-        // Wallet service
-        this._Wallet = Wallet;
-        // Network requests service
-        this._NetworkRequests = NetworkRequests;
-        // Alert service
-        this._Alert = Alert;
-        // $location to redirect
-        this._location = $location;
-        // Filters
-        this._$filter = $filter;
-        this._DataBridge = DataBridge;
+        //// Module dependencies region ////
 
-        // If no wallet show alert and redirect to home
-        if (!this._Wallet.current) {
-            this._Alert.noWalletLoaded();
-            this._location.path('/');
-            return;
-        }
+        this._Wallet = Wallet;
+        this._Alert = Alert;
+        this._$filter = $filter;
+        this._DataStore = DataStore;
+        this._$timeout = $timeout;
+
+        //// End dependencies region ////
+
+        //// Module properties region ////
 
         this.namespaces = [];
         this.subNamespaces = [];
@@ -35,54 +34,46 @@ class ExplorerNamespacesMosaicsCtrl {
 
         // General pagination
         this.pageSize = 10;
-
-        // Namespaces pagination properties
+        // Namespaces pagination
         this.currentPage = 0;
-        this.numberOfPages = function() {
-            return Math.ceil(this.namespaces.length / this.pageSize);
-        }
-
-        // Sub-namespaces pagination properties
+        // Sub-namespaces pagination
         this.currentPageSubNs = 0;
-        this.numberOfPagesSubNs = function() {
-            return Math.ceil(this.subNamespaces.length / this.pageSize);
-        }
-
-        // Mosaics pagination properties
+        // Mosaics pagination
         this.currentPageMos = 0;
-        this.numberOfPagesMos = function() {
-            return Math.ceil(this.mosaics.length / this.pageSize);
-        }
 
-        this.getNamespaces(null);
+        //// End properties region ////
 
+        // Get all root namespaces
+        this.getNamespaces();
     }
+
+    //// Module methods region ////
 
     /**
      * Gets all namespaces
      *
-     * @param {number|null} id - The namespace id up to which to return the results, null for the most recent
+     * @param {number|undefined} id - The namespace id up to which to return the results, nothing for the most recent
      */
     getNamespaces(id) {
-        return this._NetworkRequests.getNamespaces(helpers.getHostname(this._Wallet.node), id).then((res) => {
-            if(res.data.length == 100){
-                for(var i=0; i < res.data.length; i++){
-                    this.namespaces.push(res.data[i]);
+        return nem.com.requests.namespace.roots(this._Wallet.node, id).then((res) => {
+            this._$timeout(() => {
+                if(res.data.length == 100){
+                    for(var i=0; i < res.data.length; i++){
+                        this.namespaces.push(res.data[i]);
+                    }
+                    this.getNamespaces(res.data[99].meta.id);
+                } else{
+                    for(var i=0; i < res.data.length; i++){
+                        this.namespaces.push(res.data[i]);
+                    }
+                    return;
                 }
-                this.getNamespaces(res.data[99].meta.id);
-            } else{
-                for(var i=0; i < res.data.length; i++){
-                    this.namespaces.push(res.data[i]);
-                }
-                return;
-            }
+            });
         }, 
         (err) => {
-             if(err.status === -1) {
-                this._Alert.connectionError();
-            } else {
+            this._$timeout(() => {
                 this._Alert.getNamespacesByIdError(err.data.message);
-            }
+            });
         });
     }
 
@@ -98,21 +89,21 @@ class ExplorerNamespacesMosaicsCtrl {
         this.selectedMosaicName = this._$filter("translate")("EXPLORER_NS_MOS_SELECT_MOS");
         this.selectedNamespaceName = parent;
         this.selectedSubNamespaceName = "";
-        return this._NetworkRequests.getSubNamespaces(helpers.getHostname(this._Wallet.node), address, parent).then((res) => {
-            if(!res.data.length) {
-                this.subNamespaces = [];
-                this.currentPageSubNs = 0;
-            } else {
-                this.subNamespaces = res.data;
-                this.currentPageSubNs = 0;
-            }
+        return nem.com.requests.account.namespaces.owned(this._Wallet.node, address, parent).then((res) => {
+            this._$timeout(() => {
+                if(!res.data.length) {
+                    this.subNamespaces = [];
+                    this.currentPageSubNs = 0;
+                } else {
+                    this.subNamespaces = res.data;
+                    this.currentPageSubNs = 0;
+                }
+            });
         }, 
         (err) => {
-             if(err.status === -1) {
-                this._Alert.connectionError();
-            } else {
+            this._$timeout(() => {
                 this._Alert.errorGetSubNamespaces(err.data.message);
-            }
+            });
         });
     }
 
@@ -126,21 +117,21 @@ class ExplorerNamespacesMosaicsCtrl {
         this.selectedMosaic = undefined;
         this.selectedMosaicName = this._$filter("translate")("EXPLORER_NS_MOS_SELECT_MOS");
         this.selectedSubNamespaceName = parent;
-        return this._NetworkRequests.getMosaics(helpers.getHostname(this._Wallet.node), address, parent).then((res) => {
-            if(!res.data.length) {
-                this.mosaics = [];
-                this.currentPageMos = 0;
-            } else {
-                this.mosaics = res.data;
-                this.currentPageMos = 0;
-            }
+        return nem.com.requests.account.mosaics.definitions(this._Wallet.node, address, parent).then((res) => {
+            this._$timeout(() => {
+                if(!res.data.length) {
+                    this.mosaics = [];
+                    this.currentPageMos = 0;
+                } else {
+                    this.mosaics = res.data;
+                    this.currentPageMos = 0;
+                }
+            });
         }, 
         (err) => {
-            if(err.status === -1) {
-                this._Alert.connectionError();
-            } else {
+            this._$timeout(() => {
                 this._Alert.errorGetMosaics(err.data.message);
-            }
+            });
         });
     };
 
@@ -152,54 +143,53 @@ class ExplorerNamespacesMosaicsCtrl {
     processMosaic(mosaic) {
         this.selectedMosaicLevyDefinition = {};
         this.selectedMosaic = mosaic;
-        this.selectedMosaicName = helpers.mosaicIdToName(mosaic.id);
+        // Convert supply string to number
+        mosaic.properties[1].value = parseInt(mosaic.properties[1].value, 10);
+        this.selectedMosaicName = nem.utils.format.mosaicIdToName(mosaic.id);
         if (undefined !== mosaic.levy.type) {
-            if(helpers.mosaicIdToName(mosaic.levy.mosaicId) === 'nem:xem' || undefined !== this._DataBridge.mosaicDefinitionMetaDataPair[helpers.mosaicIdToName(mosaic.levy.mosaicId)]) {
-                this.selectedMosaicLevyDefinition = this._DataBridge.mosaicDefinitionMetaDataPair;
+            if(nem.utils.format.mosaicIdToName(mosaic.levy.mosaicId) === 'nem:xem' || undefined !== this._DataStore.mosaic.metaData[nem.utils.format.mosaicIdToName(mosaic.levy.mosaicId)]) {
+                this.selectedMosaicLevyDefinition = this._DataStore.mosaic.metaData;
             } else {
-                // Fetch mosaic definitions owned by creator
-                this._NetworkRequests.getMosaicsDefinitions(helpers.getHostname(this._Wallet.node), this._$filter("fmtPubToAddress")(mosaic.creator, this._Wallet.network)).then((res) => {
-                    if(res.data.length) {
-                        for (let i = 0; i < res.data.length; ++i) {
-                            this.selectedMosaicLevyDefinition[helpers.mosaicIdToName(res.data[i].id)] = {};
-                            this.selectedMosaicLevyDefinition[helpers.mosaicIdToName(res.data[i].id)].mosaicDefinition = res.data[i];
+                // Fetch all mosaic definitions owned by creator for levy
+                nem.com.requests.account.mosaics.allDefinitions(this._Wallet.node, this._$filter("fmtPubToAddress")(mosaic.creator, this._Wallet.network)).then((res) => {
+                    this._$timeout(() => {
+                        if(res.data.length) {
+                            for (let i = 0; i < res.data.length; ++i) {
+                                this.selectedMosaicLevyDefinition[nem.utils.format.mosaicIdToName(res.data[i].id)] = {};
+                                this.selectedMosaicLevyDefinition[nem.utils.format.mosaicIdToName(res.data[i].id)].mosaicDefinition = res.data[i];
+                            }
                         }
-                    }
+                    });
                 }, 
                 (err) => {
-                     if(err.status === -1) {
-                        this._Alert.connectionError();
-                    } else {
+                    this._$timeout(() => {
                         this._Alert.errorGetMosaicsDefintions(err.data.message);
-                    }
+                    });
                 });
             }
         }
+
+        // Get current supply
+        this.getCurrentSupply(nem.utils.format.mosaicIdToName(mosaic.id));
     }
 
     /**
-     * Search for a namespace given an input
+     * Get the current supply of a mosaic
      *
-     * @param {array} array - The array to look into
-     * @param {string} searchText - The name to search
+     * @param {string} id - A mosaic id
      */
-    searchNsInArray(array, searchText) {
-        if(this.currentPage > 0 && this.searchText.length) {
-            // Reset to first ns page
-            this.currentPage = 0;
-        }
-        var searchRegx = new RegExp(searchText, "i");
-        if (searchText == undefined) {
-            return array;
-        }
-        var result = [];
-        for (i = 0; i < array.length; i++) {
-            if (array[i].namespace.fqn.search(searchRegx) != -1) {
-                result.push(array[i]);
-            }
-        }
-        return result;
-    };
+    getCurrentSupply(id) {
+        return nem.com.requests.mosaic.supply(this._Wallet.node, id).then((res) => {
+            this._$timeout(() => {
+                this.selectedMosaic.supply = res.supply;
+            });
+        }, 
+        (err) => {
+            this._$timeout(() => {
+                this._Alert.getMosaicSupplyError(err.data.message)
+            });
+        });
+    }
 
     /**
      * Clean a sub-namespace of it's parent root
@@ -210,6 +200,11 @@ class ExplorerNamespacesMosaicsCtrl {
         return str.substr(str.indexOf('.')+1);
     }
 
+    formatMosaicId(id){
+        return nem.utils.format.mosaicIdToName(id);
+    }
+
+    //// End methods region ////
 }
 
 export default ExplorerNamespacesMosaicsCtrl;

@@ -17,23 +17,23 @@
           <h4>{{ 'EXPLORER_HOME_NS' | translate }}</h4>
         </div>
         <div class="panel-body">
-          <ul class="list-group" ng-repeat="namespace in $ctrl._DataBridge.namespaceOwned[$ctrl._Wallet.currentAccount.address]" ng-show="$ctrl._DataBridge.namespaceOwned[$ctrl._Wallet.currentAccount.address]">
+          <ul class="list-group" ng-repeat="namespace in $ctrl._DataStore.namespace.ownedBy[$ctrl._Wallet.currentAccount.address] | objValues | orderBy:'fqn'" ng-show="$ctrl._DataStore.namespace.ownedBy[$ctrl._Wallet.currentAccount.address]">
             <li class="list-group-item">{{namespace.fqn}}</li>
           </ul>
-          <p class="nothing" ng-show="!$ctrl._DataBridge.namespaceOwned[$ctrl._Wallet.currentAccount.address]">{{ 'GENERAL_NO_RESULTS' | translate }}</p>
+          <p class="nothing" ng-show="!$ctrl._DataStore.namespace.ownedBy[$ctrl._Wallet.currentAccount.address]">{{ 'GENERAL_NO_RESULTS' | translate }}</p>
         </div>
       </div>
       <!-- YOUR MULTISIG OWNED NAMESPACES -->
       <div class="col-lg-12 col-sm-6">
-        <div ng-show="$ctrl._DataBridge.accountData.meta.cosignatoryOf.length">
+        <div ng-show="$ctrl._DataStore.account.metaData.meta.cosignatoryOf.length">
           <div class="panel-heading">
             <h4>{{ 'EXPLORER_HOME_NS_MULTISIG' | translate }}</h4>
           </div>
           <div class="panel-body">
-              <ul class="list-group" ng-repeat="namespace in $ctrl.nsOwnedMultisig">
+              <ul class="list-group" ng-repeat="namespace in $ctrl.multisigNamespaces | orderBy">
                 <li class="list-group-item">{{namespace}}</li>
               </ul>
-              <p  class="nothing" ng-show="!$ctrl.nsOwnedMultisig.length">{{ 'GENERAL_NO_RESULTS' | translate }}</p>
+              <p  class="nothing" ng-show="!$ctrl.multisigNamespaces.length">{{ 'GENERAL_NO_RESULTS' | translate }}</p>
           </div>
         </div>
       </div>
@@ -55,13 +55,13 @@
             </tr>
           </thead>
         </table>
-        <table class="table" ng-show="$ctrl._DataBridge.mosaicOwned[$ctrl._Wallet.currentAccount.address]">
+        <table class="table" ng-show="$ctrl._DataStore.mosaic.ownedBy[$ctrl._Wallet.currentAccount.address]">
           <tbody>
-            <tr ng-repeat="mos in $ctrl._DataBridge.mosaicOwned[$ctrl._Wallet.currentAccount.address]">
+            <tr ng-repeat="mos in $ctrl._DataStore.mosaic.ownedBy[$ctrl._Wallet.currentAccount.address] | objValues | orderBy:'mosaicId.namespaceId'">
               <td title="{{mos.mosaicId.namespaceId}}:{{mos.mosaicId.name}}"><b>{{mos.mosaicId.namespaceId}}</b>:{{mos.mosaicId.name}}</td>
-              <td>{{(mos.quantity | fmtSupply:mos.mosaicId:$ctrl._DataBridge.mosaicDefinitionMetaDataPair)[0]}}<span class="text-muted">.{{(mos.quantity | fmtSupply:mos.mosaicId:$ctrl._DataBridge.mosaicDefinitionMetaDataPair)[1]}}</span></td>
+              <td>{{(mos.quantity | fmtSupply:mos.mosaicId:$ctrl._DataStore.mosaic.metaData)[0]}}<span class="text-muted">.{{(mos.quantity | fmtSupply:mos.mosaicId:$ctrl._DataStore.mosaic.metaData)[1]}}</span></td>
               <td>
-                <tag-levy mos="mos" tx="" mosaics="$ctrl._DataBridge.mosaicDefinitionMetaDataPair">
+                <tag-levy mos="mos" tx="" mosaics="$ctrl._DataStore.mosaic.metaData">
                   <span ng-show="levy.type">
                     <b>{{levy.mosaicId.namespaceId}}</b>:{{levy.mosaicId.name}}
                   </span>
@@ -71,7 +71,7 @@
                 </tag-levy>
               </td>
               <td>
-                <tag-levy mos="mos" tx="" mosaics="$ctrl._DataBridge.mosaicDefinitionMetaDataPair">
+                <tag-levy mos="mos" tx="" mosaics="$ctrl._DataStore.mosaic.metaData">
                   <span ng-show="levy.type === 1">
                       I ({{mos | fmtLevyFee:tx.amount:levy:mosaics}})
                   </span>
@@ -86,7 +86,7 @@
             </tr>
           </tbody>
         </table>
-        <div class="panel-body nothing" ng-show="!$ctrl._DataBridge.mosaicOwned[$ctrl._Wallet.currentAccount.address]">
+        <div class="panel-body nothing" ng-show="!$ctrl._DataStore.mosaic.ownedBy[$ctrl._Wallet.currentAccount.address]">
           <p>{{ 'GENERAL_NO_RESULTS' | translate }}</p>
         </div>
         <div class="panel-footer text-center bg-info">

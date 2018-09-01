@@ -8,7 +8,7 @@ import appRun from './config/app.run';
 import nwConfig from './config/nw.js';
 
 // Import Angular modules
-import 'angular-ui-router';
+import '@uirouter/angularjs';
 import 'angular-animate';
 import 'angular-sanitize';
 import 'ng-toast';
@@ -24,6 +24,7 @@ import './config/app.templates';
 
 // Import our app functionalities
 import './layout';
+import './directives';
 import './components';
 import './filters';
 import './services';
@@ -36,24 +37,30 @@ import './modules/login';
 import './modules/languages';
 import './modules/transferTransaction';
 import './modules/portal';
-import './modules/apostille';
 import './modules/account';
 import './modules/multisignature';
 import './modules/namespaces';
 import './modules/mosaics';
-import './modules/explorer';
-import './modules/importanceTransfer';
-import './modules/changelly';
-import './modules/shapeshift';
 import './modules/addressBook';
+import './modules/importanceTransfer';
 import './modules/faq';
+import './modules/trezor';
+import './modules/apostille';
+import './modules/exchanges';
+import './modules/explorer';
+import './modules/offlineTransaction';
 import './modules/voting';
+import './modules/invoice';
+import './modules/signedMessage';
+import './modules/domainNameSystem';
+import './modules/importWalletQrCode';
 
 // Create and bootstrap application
 const requires = [
     'ui.router',
     'templates',
     'app.layout',
+    'app.directives',
     'app.components',
     'app.filters',
     'app.home',
@@ -67,23 +74,10 @@ const requires = [
     'app.createMosaic',
     'app.editMosaic',
     'app.portal',
-    'app.explorerHome',
-    'app.explorerApostilles',
-    'app.explorerNamespacesMosaics',
-    'app.accountsExplorer',
     'app.signup',
     'app.login',
     'app.services',
-    'app.faq',
     'app.account',
-    'app.createApostille',
-    'app.auditApostille',
-    'app.apostilleHistory',
-    'app.apostilleMessage',
-    'app.transferApostille',
-    'app.updateApostille',
-    'app.importanceTransfer',
-    'app.multisigImportanceTransfer',
     'ngAnimate',
     'ngSanitize',
     'ngToast',
@@ -92,10 +86,31 @@ const requires = [
     'pascalprecht.translate',
     'app.lang',
     'app.changelly',
-    'app.shapeshift',
     'app.addressBook',
+    'app.importanceTransfer',
+    'app.multisigImportanceTransfer',
+    'app.faq',
+    'app.trezor',
+    'app.createApostille',
+    'app.auditApostille',
+    'app.apostilleHistory',
+    'app.shapeshift',
+    'app.explorerHome',
+    'app.explorerApostilles',
+    'app.explorerTransactions',
+    'app.accountsExplorer',
+    'app.explorerNamespacesMosaics',
+    'app.offlineTransactionCreate',
+    'app.offlineTransactionSend',
+    'app.votingPolls',
     'app.votingCreatePoll',
-    'app.votingPolls'
+    'app.apostilleMessage',
+    'app.invoice',
+    'app.signedMessageCreation',
+    'app.signedMessageVerification',
+    'app.domainNameSystem',
+    'app.dnsSearch',
+    'app.importWalletQrCode'
 ];
 
 window.$ = window.jQuery = $;

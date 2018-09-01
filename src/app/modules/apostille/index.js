@@ -37,33 +37,11 @@ apostilleHistoryModule.controller('ApostilleHistoryCtrl', ApostilleHistoryCtrl);
 let apostilleMessageModule = angular.module('app.apostilleMessage', []);
 
 // Include our UI-Router config settings
-import ApostilleMessageConfig from './manage/message/apostilleMessage.config';
+import ApostilleMessageConfig from './message/apostilleMessage.config';
 apostilleMessageModule.config(ApostilleMessageConfig);
 
 // Controllers
-import ApostilleMessageCtrl from './manage/message/apostilleMessage.controller';
+import ApostilleMessageCtrl from './message/apostilleMessage.controller';
 apostilleMessageModule.controller('ApostilleMessageCtrl', ApostilleMessageCtrl);
-
-// Create the module where our functionality can attach to
-let transferApostilleModule = angular.module('app.transferApostille', []);
-
-// Include our UI-Router config settings
-import TransferApostilleConfig from './manage/transfer/transferApostille.config';
-transferApostilleModule.config(TransferApostilleConfig);
-
-// Controllers
-import TransferApostilleCtrl from './manage/transfer/transferApostille.controller';
-transferApostilleModule.controller('TransferApostilleCtrl', TransferApostilleCtrl);
-
-// Create the module where our functionality can attach to
-let updateApostilleModule = angular.module('app.updateApostille', []);
-
-// Include our UI-Router config settings
-import UpdateApostilleConfig from './manage/update/updateApostille.config';
-updateApostilleModule.config(UpdateApostilleConfig);
-
-// Controllers
-import UpdateApostilleCtrl from './manage/update/updateApostille.controller';
-updateApostilleModule.controller('UpdateApostilleCtrl', UpdateApostilleCtrl);
 
 export default createApostilleModule;

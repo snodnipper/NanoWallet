@@ -1,27 +1,17 @@
-import CryptoHelpers from '../../../utils/CryptoHelpers';
+import nem from 'nem-sdk';
 
 class createPollCtrl {
     // Set services as constructor parameter
-    constructor($location, Alert, Voting, Wallet, nemUtils, DataBridge) {
+    constructor($timeout, Alert, Voting, Wallet, VotingUtils, DataStore) {
         'ngInject';
 
         // Declaring services
-        this._location = $location;
+        this._$timeout = $timeout;
         this._Alert = Alert;
         this._Voting = Voting;
-        this._nemUtils = nemUtils;
+        this._VotingUtils = VotingUtils;
         this._Wallet = Wallet;
-        this._DataBridge = DataBridge;
-
-        // If no wallet show alert and redirect to home
-        if (!this._Wallet.current) {
-            this._Alert.noWalletLoaded();
-            this._location.path('/');
-            return;
-        }
-
-        // Scroll to top of the page
-        window.scrollTo(0, 0);
+        this._DataStore = DataStore;
 
         // Constants
         this.MOCK_ADDRESS = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
@@ -48,7 +38,7 @@ class createPollCtrl {
         this.formData.type = 0;
         //this.formData.mosaic = 'nem:xem';
         this.description = '';
-        this.options = ['yes', 'no'];
+        this.options = ['Yes', 'No'];
         this.whitelist = [''];
 
         // input data
@@ -78,10 +68,7 @@ class createPollCtrl {
         this.issues.pollTooLong = false;
 
         // Common
-        this.common = {
-            "password": "",
-            "privateKey": ""
-        };
+        this.common = nem.model.objects.get("common");
 
         // messages
         this.formDataMessage = '';
@@ -97,7 +84,7 @@ class createPollCtrl {
         this.creating = false;
 
         this.checkFormData();
-        this.updateCurrentAccountMosaics();
+        //this.updateCurrentAccountMosaics();
     }
 
     // Adds an option field
@@ -133,18 +120,18 @@ class createPollCtrl {
     }
 
     /**
-     * updateCurrentAccountMosaics() Get current account mosaics names
+     * Get current account mosaics names
      */
-    updateCurrentAccountMosaics() {
+    /*updateCurrentAccountMosaics() {
         // Get current account
         let acct = this._Wallet.currentAccount.address;
         // Set current account mosaics names if mosaicOwned is not undefined
-        if (undefined !== this._DataBridge.mosaicOwned[acct]) {
-            this.currentAccountMosaicNames = Object.keys(this._DataBridge.mosaicOwned[acct]).sort();
+        if (undefined !== this._DataStore.mosaic.ownedBy[acct]) {
+            this.currentAccountMosaicNames = Object.keys(this._DataStore.mosaic.ownedBy[acct]).sort();
         } else {
             this.currentAccountMosaicNames = ["nem:xem"];
         }
-    }
+    }*/
 
     // Checks if data is valid
     checkFormData() {
@@ -177,7 +164,7 @@ class createPollCtrl {
         });
         if (this.hasWhitelist) {
             this.issues.invalidAddresses = this.whitelist.map((addr) => {
-                return (!this._nemUtils.isValidAddress(addr));
+                return (!this._VotingUtils.isValidAddress(addr));
             });
         } else {
             this.issues.invalidAddresses = [];
@@ -185,13 +172,13 @@ class createPollCtrl {
         if (this.issues.invalidAddresses.some(a => a) || this.issues.blankOptions.some(a => a)){
             invalid = true;
         }
-        if (this.common.password === "") {
+        if (this.common.password === "" && this._Wallet.algo !== 'trezor') {
             this.issues.noPassword = true;
             invalid = true;
         } else {
             this.issues.noPassword = false;
         }
-        if (!this._nemUtils.isValidAddress(this.pollIndexAccount)) {
+        if (!this._VotingUtils.isValidAddress(this.pollIndexAccount)) {
             this.issues.invalidIndexAccount = true;
             invalid = true;
         } else {
@@ -245,11 +232,11 @@ class createPollCtrl {
         }
         this.pollMessage = "poll:" + JSON.stringify(header);
 
-        this.issues.titleTooLong = (this._nemUtils.getMessageLength(this.formDataMessage) > 1024) || (this._nemUtils.getMessageLength(this.formData.title) > 420);
-        this.issues.descriptionTooLong = (this._nemUtils.getMessageLength(this.descriptionMessage) > 1024);
-        this.issues.optionsTooLong = (this._nemUtils.getMessageLength(this.optionsMessage) > 1024);
-        this.issues.whitelistTooLong = (this._nemUtils.getMessageLength(this.whitelistMessage) > 1024);
-        this.issues.pollTooLong = (this._nemUtils.getMessageLength(this.pollMessage) > 1024);
+        this.issues.titleTooLong = (this._VotingUtils.getMessageLength(this.formDataMessage) > 1024) || (this._VotingUtils.getMessageLength(this.formData.title) > 420);
+        this.issues.descriptionTooLong = (this._VotingUtils.getMessageLength(this.descriptionMessage) > 1024);
+        this.issues.optionsTooLong = (this._VotingUtils.getMessageLength(this.optionsMessage) > 1024);
+        this.issues.whitelistTooLong = (this._VotingUtils.getMessageLength(this.whitelistMessage) > 1024);
+        this.issues.pollTooLong = (this._VotingUtils.getMessageLength(this.pollMessage) > 1024);
 
         if (this.issues.titleTooLong || this.issues.descriptionTooLong || this.issues.optionsTooLong || this.issues.pollTooLong || (this.issues.whitelistTooLong && this.hasWhitelist))
             this.invalidData = true;
@@ -260,12 +247,12 @@ class createPollCtrl {
     // Calculates the fee cost of the messages
     calculateFee() {
         var total = 0;
-        total += this._nemUtils.getMessageFee(this.formDataMessage);
-        total += this._nemUtils.getMessageFee(this.descriptionMessage);
-        total += this._nemUtils.getMessageFee(this.optionsMessage);
-        total += this._nemUtils.getMessageFee(this.pollMessage);
+        total += this._VotingUtils.getMessageFee(this.formDataMessage);
+        total += this._VotingUtils.getMessageFee(this.descriptionMessage);
+        total += this._VotingUtils.getMessageFee(this.optionsMessage);
+        total += this._VotingUtils.getMessageFee(this.pollMessage);
         if (this.formData.type === 1) {
-            total += this._nemUtils.getMessageFee(this.whitelistMessage);
+            total += this._VotingUtils.getMessageFee(this.whitelistMessage);
         }
         return total;
     }
@@ -281,7 +268,7 @@ class createPollCtrl {
         this.formData.type = 0;
         //this.formData.mosaic = 'nem:xem';
         this.description = '';
-        this.options = ['yes', 'no'];
+        this.options = ['Yes', 'No'];
         this.whitelist = [''];
 
         // input data
@@ -308,10 +295,7 @@ class createPollCtrl {
         this.issues.pollTooLong = false;
 
         // Common
-        this.common = {
-            "password": "",
-            "privateKey": ""
-        };
+        this.common = nem.model.objects.get("common");
 
         // messages
         this.formDataMessage = '';
@@ -334,22 +318,15 @@ class createPollCtrl {
         this.creating = true;
         this.checkFormData();
         // Initial checks that may forbid the operation move forward
-        if (this._DataBridge.accountData.account.balance < this.fee) {
+        if (this._DataStore.account.metaData.account.balance < this.fee) {
             // This account has insufficient funds to perform the operation
-            this._Alert.errorInsuficientBalance();
+            this._Alert.insufficientBalance();
             this.creating = false;
             return;
         }
-        // Decrypt/generate private key and check it. Returned private key is contained into this.common
-        if (!CryptoHelpers.passwordToPrivatekeyClear(this.common, this._Wallet.currentAccount, this._Wallet.algo, false)) {
-            this._Alert.invalidPassword();
-            this.creating = false;
-            return;
-        } else if (!CryptoHelpers.checkAddress(this.common.privateKey, this._Wallet.network, this._Wallet.currentAccount.address)) {
-            this._Alert.invalidPassword();
-            this.creating = false;
-            return;
-        }
+
+        // Get account private key or return
+        if (!this._Wallet.decrypt(this.common)) return this.creating = false;
 
         var details = {}
         details.formData = this.formData;
@@ -364,10 +341,15 @@ class createPollCtrl {
             this._Alert.pollCreationSuccess();
             this.clearForm();
         }).catch(err => {
-            console.log(err.message);
-            this._Alert.votingUnexpectedError(err.message);
-            this.creating = false;
-            this.clearForm();
+            this._$timeout(() => {
+                this.creating = false;
+                if (err.message) {
+                    this._Alert.votingUnexpectedError(err.message);
+                } else {
+                    this._Alert.votingUnexpectedError(err.data.message);
+                }
+                this.clearForm();
+            });
         });
     }
 

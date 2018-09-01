@@ -1,77 +1,78 @@
-import Network from '../../../utils/Network';
-import Sinks from '../../../utils/sinks';
-import helpers from '../../../utils/helpers';
+import nem from 'nem-sdk';
 
 class ExplorerApostillesCtrl {
-    constructor(Wallet, $scope, NetworkRequests, Alert, $location, DataBridge) {
+
+    /**
+     * Initialize dependencies and properties
+     *
+     * @params {services} - Angular services to inject
+     */
+    constructor(Wallet, Alert, $timeout) {
         'ngInject';
 
-        // Wallet service
+        //// Module dependencies region ////
+
         this._Wallet = Wallet;
-        // Network requests service
-        this._NetworkRequests = NetworkRequests;
-        // Alert service
         this._Alert = Alert;
-        // DataBridge service
-        this._DataBridge = DataBridge;
-        // $location to redirect
-        this._location = $location;
+        this._$timeout = $timeout;
 
-        // If no wallet show alert and redirect to home
-        if (!this._Wallet.current) {
-            this._Alert.noWalletLoaded();
-            this._location.path('/');
-            return;
-        }
+        //// End dependencies region ////
 
-        // Array to get sink data
+        //// Module properties region ////
+
+        // Store sink transactions
         this.sinkData = [];
-        // Get sink depending of ntwork
-        this.sink = Sinks.sinks.apostille[this._Wallet.network].toUpperCase().replace(/-/g, '');
+
+        // Apostilles pagination properties
+        this.currentPage = 0;
+        this.pageSize = 5;
+
+        //// End properties region ////
 
         // Get incoming transactions of the sink account
         this.getSinkTransactions();
-
-        // Public sink's apostilles pagination properties
-        this.currentPageSink = 0;
-        this.pageSizeSink = 5;
-        this.numberOfPagesSink = function() {
-            return Math.ceil(this.sinkData.length / this.pageSizeSink);
-        }
-
     }
+
+    //// Module methods region ////
 
     /**
      * Get incoming transaction of the sink account
      */
     getSinkTransactions() {
-        return this._NetworkRequests.getIncomingTxes(helpers.getHostname(this._Wallet.node), this.sink, "").then((data) => {
-            this.sinkData = this.cleanApostilles(data.data);
+        // Get sink depending of network
+        let sink = nem.model.sinks.apostille[this._Wallet.network].toUpperCase().replace(/-/g, '');
+        return nem.com.requests.account.transactions.incoming(this._Wallet.node, sink).then((data) => {
+            this._$timeout(() => {
+                this.sinkData = this.cleanApostilles(data.data);
+            });
         }, 
         (err) => {
-            if(err.status === -1) {
-                this._Alert.connectionError();
-            } else {
+            this._$timeout(() => {
                 this._Alert.errorFetchingIncomingTxes(err.data.message);
-            }
+            });
         });
     }
 
     /**
      * Keep only HEX messages in transaction array
+     *
+     * @param {array} array - An array of transactions
+     *
+     * @return {object} result - An array of transactions with HEX messages
      */
     cleanApostilles(array) {
-        let result = []
+        let result = [];
+        let checksum = "fe4e5459";
         if(array.length) {
             for (let i = 0; i < array.length; i++){
                 if(array[i].transaction.type === 257) {
-                    if(!array[i].transaction.message || !array[i].transaction.message.payload || array[i].transaction.message.payload.substring(0, 2) !== 'fe') {
+                    if(!array[i].transaction.message || !array[i].transaction.message.payload || array[i].transaction.message.payload.substring(0, 8) !== checksum) {
                         //console.log("Not an apostille message")
                     } else {
                         result.push(array[i])
                     }
                 } else if(array[i].transaction.type === 4100) {
-                    if(!array[i].transaction.otherTrans.message|| !array[i].transaction.otherTrans.message.payload || array[i].transaction.otherTrans.message.payload.substring(0, 2) !== 'fe') {
+                    if(!array[i].transaction.otherTrans.message|| !array[i].transaction.otherTrans.message.payload || array[i].transaction.otherTrans.message.payload.substring(0, 8) !== checksum) {
                         //console.log("Not an apostille message")
                     } else {
                       result.push(array[i])
@@ -84,6 +85,7 @@ class ExplorerApostillesCtrl {
         }
     }
 
+    //// End methods region ////
 }
 
 export default ExplorerApostillesCtrl;

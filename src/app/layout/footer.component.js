@@ -13,15 +13,12 @@ class AppFooterCtrl {
      * Reset data from localstorage
      */
     purge() {
-        if (confirm(this._$filter('translate')('HEADER_PURGE_MESSAGE')) == true) {
-           this._storage.wallets = [];
-            this._Alert.successPurge();
-        } else {
-            this._Alert.purgeCancelled();
-        }
+        this._storage.wallets = [];
+        this._Alert.successPurge();
     }
 }
 
+// Footer config
 let AppFooter = {
     controller: AppFooterCtrl,
     templateUrl: 'layout/footer.html'

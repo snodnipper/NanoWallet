@@ -60,13 +60,6 @@ export default class Alert {
         });
     }
 
-    noNodeSet() {
-        this._ngToast.create({
-            content: this._$filter('translate')('ALERT_NO_NODE_SET'),
-            className: 'danger'
-        });
-    }
-
     invalidCustomNode() {
         this._ngToast.create({
             content: this._$filter('translate')('ALERT_INVALID_CUSTOM_NODE'),
@@ -374,7 +367,7 @@ export default class Alert {
             className: 'danger'
         });
     }
-
+    
     namespaceExpiryNotice(ns, blocks) {
         this._ngToast.create({
             content: this._$filter("translate")("RENEW_NS_ALERT_PART_1") + ' <b>'+ns+'</b> ' + this._$filter("translate")("RENEW_NS_ALERT_PART_2") + ' (~' + blocks + ' ' + this._$filter("translate")("GENERAL_BLOCKS") + '). ' + this._$filter("translate")("RENEW_NS_ALERT_PART_3") ,
@@ -453,9 +446,81 @@ export default class Alert {
         });
     }
 
-    errorInsufficientBalance() {
+    recipientHasNoPublicKey() {
         this._ngToast.create({
-            content: this._$filter("translate")("ALERT_INSUFFICIENT_BALANCE"),
+            content: this._$filter("translate")("ALERT_RECIPIENT_PUBLIC_KEY"),
+            className: 'danger'
+        });
+    }
+
+    noEncryptionWithMultisig() {
+        this._ngToast.create({
+            content: this._$filter("translate")("ALERT_ENCRYPT_MULTISIG"),
+            className: 'danger'
+        });
+    }
+
+    brainPasswordTooShort() {
+        this._ngToast.create({
+            className: 'danger',
+            content: this._$filter('translate')('ALERT_BRAIN_PASSWORD_TOO_SHORT')
+        });
+    }
+
+    nodeSeemsOffline() {
+        this._ngToast.create({
+            className: 'danger',
+            content: this._$filter('translate')('ALERT_NODE_SEEMS_OFFLINE'),
+            dismissOnTimeout: false,
+            dismissButton: true
+        });
+    }
+
+    passphraseIsWeak() {
+        this._ngToast.create({
+            className: 'danger',
+            content: this._$filter('translate')('ALERT_WEAK_PASSPHRASE')
+        });
+    }
+
+    brainWalletUpgrade() {
+        this._ngToast.create({
+            className: 'danger',
+            content: this._$filter('translate')('ALERT_BRAIN_WALLET_UPGRADE'),
+            additionalClasses: 'toast-text-left',
+            dismissOnTimeout: false,
+            dismissButton: true,
+            dismissOnClick: false
+        });
+    }
+
+    exchangeNeedsMessage() {
+        this._ngToast.create({
+            className: 'danger',
+            content: this._$filter('translate')('ALERT_EXCHANGE_NEEDS_MESSAGE'),
+            dismissOnTimeout: false,
+            dismissButton: true,
+            dismissOnClick: false
+        });
+    }
+
+    contactAlreadyInAddressBook() {
+        this._ngToast.create({
+            className: 'danger',
+            content: this._$filter('translate')('ALERT_ACCOUNT_ALREADY_IN_ADDRESS_BOOK')
+        });
+    }
+
+    maxMosaicSupply() {
+        this._ngToast.create({
+            className: 'danger',
+            content: this._$filter('translate')('ALERT_MAX_MOSAIC_SUPPLY')
+        });
+    }
+
+    getMosaicSupplyError(message) {
+        this._ngToast.create({
+            content: this._$filter('translate')('ALERT_GET_MOSAIC_SUPPLY_ERROR') + message,
             className: 'danger'
         });
     }
@@ -474,39 +539,27 @@ export default class Alert {
         });
     }
 
-    brainPasswordTooShort() {
+    noEncryptedMessageOffline() {
         this._ngToast.create({
-            className: 'danger',
-            content: this._$filter('translate')('ALERT_BRAIN_PASSWORD_TOO_SHORT')
+            content: this._$filter("translate")("ALERT_ENCRYPTED_MSG_OFFLINE"),
+            className: 'danger'
         });
     }
 
-    nodeSeemsOffline() {
+    insufficientBalance() {
         this._ngToast.create({
-            className: 'danger',
-            content: this._$filter('translate')('ALERT_NODE_SEEMS_OFFLINE'),
-            dismissOnTimeout: false,
-            dismissButton: true,
+            content: this._$filter("translate")("ALERT_INSUFFICIENT_BALANCE"),
+            className: 'danger'
         });
     }
 
-    passphraseIsWeak() {
+    dnsNoInfoFound(message) {
         this._ngToast.create({
-            className: 'danger',
-            content: this._$filter('translate')('ALERT_WEAK_PASSPHRASE')
+            content: this._$filter('translate')('ALERT_DNS_NO_INFO_FOUND') + message,
+            className: 'danger'
         });
     }
 
-    brainWalletUpgrade() {
-        this._ngToast.create({
-            className: 'danger',
-            content: this._$filter('translate')('ALERT_BRAIN_WALLET_UPGRADE'),
-            dismissOnTimeout: false,
-            additionalClasses: 'toast-text-left',
-            dismissButton: true,
-            dismissOnClick: false
-        });
-    }
 
     /***
      * Success alerts
@@ -594,6 +647,26 @@ export default class Alert {
             className: 'success'
         });
     }
+
+    signedTxCopySuccess() {
+        this._ngToast.create({
+            content: this._$filter('translate')('ALERT_COPY_SIGNED_TX_SUCCESS'),
+            className: 'success'
+        });
+    }
+    signedMsgCopySuccess() {
+        this._ngToast.create({
+            content: this._$filter('translate')('ALERT_COPY_SIGNED_MSG_SUCCESS'),
+            className: 'success'
+        });
+    }
+    dnsMsgSuccess(message) {
+        this._ngToast.create({
+            content: this._$filter('translate')('ALERT_DNS_SUCCESS')+message,
+            className: 'success'
+        });
+    }
+
 
     /***
      * Transaction notifications

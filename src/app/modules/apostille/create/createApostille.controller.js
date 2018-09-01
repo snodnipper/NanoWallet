@@ -1,151 +1,134 @@
-import helpers from '../../../utils/helpers';
-import Address from '../../../utils/Address';
-import KeyPair from '../../../utils/KeyPair';
-import Sinks from '../../../utils/sinks';
-import CryptoHelpers from '../../../utils/CryptoHelpers';
-import Nty from '../../../utils/nty';
-import Network from '../../../utils/Network';
-import convert from '../../../utils/convert';
+import nem from 'nem-sdk';
+import Helpers from '../../../utils/helpers';
 
 class CreateApostilleCtrl {
-    constructor(DataBridge, Wallet, Alert, Transactions, $timeout, $location, $filter, $q, $localStorage) {
+
+    /**
+     * Initialize dependencies and properties
+     *
+     * @params {services} - Angular services to inject
+     */
+    constructor(Nty, DataStore, $filter, Alert, Wallet, $timeout, $state) {
         'ngInject';
 
-        // DataBidge service
-        this._DataBridge = DataBridge;
-        // Wallet service
-        this._Wallet = Wallet;
-        // Alert service
-        this._Alert = Alert;
-        // Transaction service
-        this._Transactions = Transactions;
-        // $timeout to delay digests when available
-        this._$timeout = $timeout;
-        // $location to redirect
-        this._location = $location;
-        // Filters
+        //// Module dependencies region ////
+
+        this._Nty = Nty;
+        this._DataStore = DataStore;
         this._$filter = $filter;
-        // Promises
-        this._$q = $q;
-        //Local storage
-        this._storage = $localStorage;
+        this._Alert = Alert;
+        this._Wallet = Wallet;
+        this._$timeout = $timeout;
+        this._$state = $state;
 
-        // If no wallet show alert and redirect to home
-        if (!this._Wallet.current) {
-            this._Alert.noWalletLoaded();
-            this._location.path('/');
-            return;
-        }
+        //// End dependencies region ////
 
-        this.contacts = []
+        // Initialization
+        this.init();
+    }
 
-        if(undefined !== this._storage.contacts && undefined !== this._storage.contacts[this._Wallet.currentAccount.address] && this._storage.contacts[this._Wallet.currentAccount.address].length) {
-            this.contacts = this._storage.contacts[this._Wallet.currentAccount.address]
-        }
+    //// Module methods region ////
 
-        // Apostille hashing info array
-        this.hashing = [{
-            name: "MD5",
-            signedVersion: "81",
-            version: "01"
-        }, {
-            name: "SHA1",
-            signedVersion: "82",
-            version: "02"
-        }, {
-            name: "SHA256",
-            signedVersion: "83",
-            version: "03"
-        }, {
-            name: "SHA3-256",
-            signedVersion: "88",
-            version: "08"
-        }, {
-            name: "SHA3-512",
-            signedVersion: "89",
-            version: "09"
-        }];
-
+    /**
+     * Initialize module properties
+     */
+    init() {
+        this.isUpdate = this._$state.params.isUpdate;
+        // Object to contain our password & private key data
+        this.common = nem.model.objects.get("common");
+        // Form is based on a transfer transaction object
+        this.formData =  nem.model.objects.get("transferTransaction");
+        this.formData.messageType = 0;
+        this.formData.tags = this._$state.params.tags;
+        this.formData.isText = false;
+        this.formData.selectedHashing = nem.model.apostille.hashing["SHA256"];
+        this.formData.isPrivate = true;
+        this.formData.textTitle = "";
+        this.formData.textContent = "";
+        // Available hashing methods
+        this.hashing = nem.model.apostille.hashing;
         this.types = [{
             name: this._$filter('translate')('GENERAL_PUBLIC'),
             value: false
         },{
             name: this._$filter('translate')('APOSTILLE_KEEP_PRIVATE'),
             value: true
-        }]
-
-        /**
-         * Default apostille properties
-         */
-        this.formData = {}
-        this.formData.recipient = '';
-        this.formData.amount = 0;
-        this.formData.message = '';
-        this.formData.encryptMessage = false;
-        // Default hashing is sha256
-        this.formData.hashing = this.hashing[2];
-        this.formData.fee = 0;
-        // Multisig data
-        this.formData.innerFee = 0;
-        this.formData.isMultisig = false;
-        this.formData.multisigAccount = this._DataBridge.accountData.meta.cosignatoryOf.length == 0 ? '' : this._DataBridge.accountData.meta.cosignatoryOf[0];
-
-        // Upload files by default
-        this.formData.isFiles = true;
-        // To show text area
-        this.formData.isText = false;
-        // Hash signed by default
-        this.formData.isPrivate = true;
-        // Apostille tags
-        this.formData.tags = '';
-        // Array of valid files to apostille
-        this.filesToApostille = [];
-        // Array of rejected files to apostille
-        this.rejected = [];
-        // Array to contain initial base64 data of files to apostille
-        this.fileContentArray = [];
+        }];
+        // Array of apostilles to send
+        this.apostilles = [];
+        // Array of apostilles rejected, kept if re-init
+        this.rejected = this.rejected ? this.rejected : [];
+        // Prevent user to click twice on send when already processing
+        this.okPressed = false;
+        // Pagination properties
+        this.currentPage = 0;
+        this.currentPageRej = 0;
+        this.pageSize = 5;
+        // Set nty data in Wallet service if exists in local storage
+        this._Nty.set();
         // Init JSzip
         this.zip = new JSZip();
+    }
 
-        // Needed to prevent user to click twice on send when already processing
-        this.okPressed = false;
-
-        // Show valid files in view by default
-        this.viewRejected = false;
-
-        // Object to contain our password & private key data.
-        this.common = {
-            'password': '',
-            'privateKey': '',
-        };
-
-        // Files to apostille pagination properties
-        this.currentPage = 0;
-        this.pageSize = 5;
-        this.numberOfPages = function() {
-            return Math.ceil(this.filesToApostille.length / this.pageSize);
+    /**
+     * Process the file to apostille and push to array
+     *
+     * @param {object} $fileContent - Base 64 content of the file 
+     * @param {object} $fileData - Meta data of the file
+     */
+    processFile($fileContent, $fileData) {
+        // Get account private key for preparation or return
+        if (!this._Wallet.decrypt(this.common)) return;
+        // Only 25 apostilles per batch
+        if (this.apostilles.length > 24) return;
+        // Arrange data if custom text
+        if (this.formData.isText) {
+            $fileData = { 
+                name: $fileData + ".txt", 
+                lastModified: new Date().getTime(), 
+                lastModifiedDate: new Date().toISOString(), 
+                size: Buffer.byteLength($fileContent, 'utf8'), 
+                type: "text/plain" 
+            }
+            $fileContent = "data:application/x-pdf;base64," + nem.crypto.js.enc.Base64.stringify(nem.crypto.js.enc.Utf8.parse($fileContent));
+        }
+        //
+        let rawFileContent = nem.crypto.js.enc.Base64.parse($fileContent.split(/,(.+)?/)[1]);
+        // Create the apostille
+        let apostille = nem.model.apostille.create(this.common, $fileData.name, rawFileContent, this.formData.tags, this.formData.selectedHashing, this.formData.isMultisig, this.formData.multisigAccount, this.formData.isPrivate, this._Wallet.network);
+        
+        // Arrange apostille for update
+        if(this.isUpdate) {
+            // Set original dedicated account into apostille
+            apostille.data.dedicatedAccount.address = this._$state.params.address;
+            apostille.data.dedicatedAccount.privateKey = this._$state.params.privateKey;
+            // Set original dedicated account as recipient
+            if (apostille.transaction.type === nem.model.transactionTypes.multisigTransaction) {
+                apostille.transaction.otherTrans.recipient = this._$state.params.address;
+            } else {
+                apostille.transaction.recipient = this._$state.params.address;
+            }
         }
 
-        // Rejected files pagination properties
-        this.currentPageRej = 0;
-        this.pageSizeRej = 5;
-        this.numberOfPagesRej = function() {
-            return Math.ceil(this.rejected.length / this.pageSizeRej);
-        }
+        this.apostilles.push(apostille);
+    }
 
-        // Load nty Data if any
-        this._Wallet.setNtyData();
+    /**
+     * Trigger file uploading for nty
+     */
+    uploadNty() {
+        document.getElementById("uploadNty").click();
+    }
 
-        /**
-         * Fix safari and chrome CORS issue
-         */
-        this.certificateLocation = "./images/certificate.png";
-
-        let isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
-        let isSafari = /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
-
-        if (isChrome || isSafari) {
-            this.certificateLocation = "https://raw.githubusercontent.com/NemProject/NanoWallet/master/src/images/certificate.png";
+    /**
+     * Save nty in Wallet service and local storage
+     *
+     * @params {object} $fileContent - Content of an nty file
+     */
+    loadNty($fileContent) {
+        this._Nty.setInLocalStorage(JSON.parse($fileContent));
+        if (this._Wallet.ntyData.length) {
+            this._Alert.ntyFileSuccess();
         }
     }
 
@@ -165,445 +148,112 @@ class CreateApostilleCtrl {
     }
 
     /**
-     * Process the file to apostille and push to array
+     * Build the apostille file and certificate
      *
-     * @param {object} $fileContent - Base 64 content of the file 
-     * @param {object} $fileData - Meta data of the file
+     * @param {object} announceResult - A NEM announce result object
+     * @param {object} apostille - An apostille object
+     * @param {number} i - The position of the apostille object in the array of apostilles
      */
-    processFile($fileContent, $fileData) {
-
-        // Limit is 25 files to apostille
-        if (this.filesToApostille.length < 25) {
-
-            // Arrange data if custom text
-            if (this.formData.isText) {
-                $fileData = { 
-                    name: $fileData + ".txt", 
-                    lastModified: new Date().getTime(), 
-                    lastModifiedDate: new Date().toISOString(), 
-                    size: Buffer.byteLength($fileContent, 'utf8'), 
-                    type: "text/plain" 
+    buildApostille(announceResult, apostille, i) {
+        let isMultisig = apostille.transaction.type === nem.model.transactionTypes.multisigTransaction;
+        let timeStamp = new Date();
+        let hash = announceResult.transactionHash.data;
+        let multisigHash = isMultisig ? announceResult.innerTransactionHash.data : '';
+        let url = isMultisig ? this._Wallet.chainLink + multisigHash : this._Wallet.chainLink + hash;
+        let owner = this._Wallet.currentAccount.address;
+        let from = isMultisig ? nem.model.address.toAddress(apostille.transaction.otherTrans.signer, this._Wallet.network) : this._Wallet.currentAccount.address;
+        let apostilleName = Helpers.getFileName(apostille.data.file.name) + " -- Apostille TX " + hash + " -- Date " + Helpers.toShortDate(timeStamp) + "." + Helpers.getExtension(apostille.data.file.name);
+        let message = isMultisig ? apostille.transaction.otherTrans.message.payload : apostille.transaction.message.payload;
+        let recipient = apostille.data.dedicatedAccount.address;
+        let recipientPrivateKey = apostille.data.dedicatedAccount.privateKey;
+        // Create or update nty data if exist
+        this._Nty.updateData(this._Nty.createData(apostille.data.file.name, apostille.data.tags, timeStamp, message, hash, multisigHash, owner, from, recipient, recipientPrivateKey));
+        // Draw certificate then push files into archive
+        this._Nty.drawCertificate(apostille.data.file.name, timeStamp.toDateString(), owner, apostille.data.tags, from, recipient, recipientPrivateKey, hash, message, url).then((certificate) => {
+            this._$timeout(() => {
+                // Add renamed file to archive
+                this.zip.file(apostilleName, (nem.crypto.js.enc.Base64.stringify(apostille.data.file.content)), {
+                    base64: true
+                });
+                // Add certificate to archive
+                this.zip.file("Certificate of " + Helpers.getFileName(apostille.data.file.name) + " -- TX " + hash + " -- Date " + Helpers.toShortDate(timeStamp) + ".png", (certificate).split(",").pop(), {
+                    base64: true
+                });
+                // If last file of the array
+                if (i === this.apostilles.length - 1) {
+                    // Download archive of files
+                    this.downloadSignedFiles();
+                    return;
                 }
-                $fileContent = "data:application/x-pdf;base64," + CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse($fileContent));
-            }
-
-            // Remove the data:application/octet-stream;base64 part
-            let cleanedDataContent = $fileContent.split(/,(.+)?/)[1];
-            // Base 64 to word array
-            let parsedData = CryptoJS.enc.Base64.parse(cleanedDataContent);
-
-            // Original filename
-            let currentFileName = $fileData.name;
-
-            // Check if name is too long, otherwise when apostille infos are appended it can go out of bounds
-            if (helpers.getFileName(currentFileName).length > 32) {
-                return this.pushError(this._$filter('translate')('APOSTILLE_NAME_TOO_LONG'), currentFileName, this.formData.tags);
-            }
-
-            // Decrypt/generate private key and check it. Returned private key is contained into this.common
-            if (!CryptoHelpers.passwordToPrivatekeyClear(this.common, this._Wallet.currentAccount, this._Wallet.algo, false)) {
-                this._Alert.invalidPassword();
-                this.cleanData();
-                return;
-            } else if (!CryptoHelpers.checkAddress(this.common.privateKey, this._Wallet.network, this._Wallet.currentAccount.address)) {
-                this._Alert.invalidPassword();
-                this.cleanData();
-                return;
-            } else {
-                // Private key successfully decrypted
-                let recipientPrivateKey;
-
-                if (this.formData.isPrivate) {
-                    let kp = KeyPair.create(helpers.fixPrivateKey(this.common.privateKey));
-                    // Create recipient account from signed sha256 hash of new filename
-                    let signedFilename = kp.sign(CryptoJS.SHA256(currentFileName).toString(CryptoJS.enc.Hex)).toString();
-                    let recipientKp = KeyPair.create(helpers.fixPrivateKey(signedFilename));
-                    this.formData.recipient = Address.toAddress(recipientKp.publicKey.toString(), this._Wallet.network);
-                    recipientPrivateKey = helpers.fixPrivateKey(signedFilename);
-
-                    // Create hash from file content and selected hashing
-                    let hash = this.hashFileData(parsedData, this.formData.hashing);
-                    // Get checksum
-                    let checksum = hash.substring(0, 10);
-                    // Get hash without checksum
-                    let dataHash = hash.substring(10);
-                    // Set checksum + signed hash as message
-                    this.formData.message = checksum + kp.sign(dataHash).toString();
-                } else {
-                    // Use sink account
-                    this.formData.recipient = Sinks.sinks.apostille[this._Wallet.network].toUpperCase().replace(/-/g, '');
-                    // Set recipient private key
-                    recipientPrivateKey = "None (public sink)";
-                    // No signing we just put the hash in message
-                    this.formData.message = this.hashFileData(parsedData, this.formData.hashing);
-                }
-
-                // update the fee
-                this.updateFee();
-
-                // Add file to list
-                this.addFileToList(currentFileName, cleanedDataContent, recipientPrivateKey, this.formData.isPrivate);
-            }
-        }
+            });
+        });
     }
-
-    /**
-     * Update transaction fee
-     */
-    updateFee() {
-        let entity = this._Transactions.prepareApostilleTransfer(this.common, this.formData);
-        this.formData.fee = entity.fee;
-        if (this.formData.isMultisig) {
-            this.formData.innerFee = entity.otherTrans.fee;
-        }
-    }
-
-    /**
-     * Hash the file content depending of hashing
-     *
-     * @param {string} data - Base 64 file content
-     * @param {object} hashing - The chosen hashing object
-     */
-    hashFileData(data, hashing) {
-        // Full checksum is 0xFE + 0x4E + 0x54 + 0x59 + hashing version byte
-        let checksum;
-        // Append byte to checksum
-        if (this.formData.isPrivate) {
-            checksum = "fe4e5459" + hashing.signedVersion;
-        } else {
-            checksum = "fe4e5459" + hashing.version;
-        }
-
-        // Build the apostille hash
-        if (hashing.name === "MD5") {
-            return checksum + CryptoJS.MD5(data);
-        } else if (hashing.name === "SHA1") {
-            return checksum + CryptoJS.SHA1(data);
-        } else if (hashing.name === "SHA256") {
-            return checksum + CryptoJS.SHA256(data);
-        } else if (hashing.name === "SHA3-256") {
-            return checksum + CryptoJS.SHA3(data, {
-                outputLength: 256
-            });
-        } else {
-            return checksum + CryptoJS.SHA3(data, {
-                outputLength: 512
-            });
-        }
-    };
-
-    /**
-     * Add the file to array of files to apostille
-     *
-     * @param {string} currentFileName - The original filename
-     * @param {string} base64 - The file content data as base64
-     * @param {string} recipientPrivateKey - The destination account private key
-     * @param {boolean} isSigned - True if apostille is signed, false otherwise
-     */
-    addFileToList(currentFileName, base64, recipientPrivateKey, isSigned) {
-        if (this.formData.isMultisig) {
-            this.filesToApostille.push({
-                "filename": currentFileName,
-                "fileData": base64,
-                "recipientPrivateKey": recipientPrivateKey,
-                "message": this.formData.message,
-                "tags": this.formData.tags,
-                "recipient": this.formData.recipient,
-                "private": isSigned,
-                "fee": this.formData.fee,
-                "multisig": [{
-                    "innerFees": this.formData.innerFee
-                }],
-                'amount': 0,
-                "innerFee": this.formData.innerFee,
-                'encryptMessage': false,
-                'isMultisig': this.formData.isMultisig,
-                'multisigAccount': this.formData.multisigAccount
-            });
-        } else {
-            this.filesToApostille.push({
-                "filename": currentFileName,
-                "fileData": base64,
-                "recipientPrivateKey": recipientPrivateKey,
-                "message": this.formData.message,
-                "tags": this.formData.tags,
-                "recipient": this.formData.recipient,
-                "private": isSigned,
-                "fee": this.formData.fee,
-                "multisig": [],
-                'amount': 0,
-                "innerFee": 0,
-                'encryptMessage': false,
-                'isMultisig': false,
-                'multisigAccount': this.formData.multisigAccount
-            });
-        }
-
-        // Reset data
-        this.cleanData();
-    };
 
     /**
      * Download the archive of signed files
      */
     downloadSignedFiles() {
-        // If there is success txes
-        if (this.successTxes > 0) {
+        // Trigger if at least 1 file and 1 certificate in the archive
+        if (Object.keys(this.zip.files).length > 1) {
+            // Add created or updated nty file to archive
+            this.zip.file("Nty-file-" + Helpers.toShortDate(new Date()) + ".nty", JSON.stringify(this._Wallet.ntyData));
             // Generate the zip
             this.zip.generateAsync({
                 type: "blob"
             }).then((content) => {
                 // Trigger download
-                saveAs(content, "NEMsigned -- Do not Edit -- " + helpers.getTimestampShort(helpers.createTimeStamp()) + ".zip");
+                saveAs(content, "NEMsigned -- Do not Edit -- " + Helpers.toShortDate(new Date()) + ".zip");
                 this._$timeout(() => {
-                    // Reset all apostilles
-                    this.clearAllApostille();
+                    // Reset all
+                    return this.init();
                 })
             });
         }
     }
 
     /**
-     * Trigger file uploading for nty
-     */
-    uploadNty() {
-        document.getElementById("uploadNty").click();
-    }
-
-    /**
-     * Save nty in Wallet service and local storage
-     *
-     * @params {object} $fileContent - Content of an nty file
-     */
-    loadNty($fileContent) {
-        this._Wallet.setNtyDataInLocalStorage(JSON.parse($fileContent));
-        if (this._Wallet.ntyData.length) {
-            this._Alert.ntyFileSuccess();
-        }
-    }
-
-
-    /**
-     * Clean temp data
-     */
-    cleanData() {
-        $("#fileToNotary").val(null);
-        this.formData.message = "";
-        this.formData.fee = "";
-        this.formData.amount = 0;
-        this.formData.recipient = "";
-        this.formData.textTitle = "";
-        this.formData.textContent = "";
-    }
-
-    /**
-     * Clear all data
-     */
-    clearAllApostille() {
-        this.cleanData();
-        this.zip = new JSZip();
-        this.formData.tags = "";
-        this.filesToApostille = [];
-    }
-
-    /**
-     * Build and broadcast the transaction to the network
+     * Prepare and broadcast the transaction to the network
      */
     send() {
-        // Disable send button;
+        // Disable send button
         this.okPressed = true;
 
-        // Decrypt/generate private key and check it. Returned private key is contained into this.common
-        if (!CryptoHelpers.passwordToPrivatekeyClear(this.common, this._Wallet.currentAccount, this._Wallet.algo, true)) {
-            this._Alert.invalidPassword();
-            // Enable send button
-            this.okPressed = false;
-            return;
-        } else if (!CryptoHelpers.checkAddress(this.common.privateKey, this._Wallet.network, this._Wallet.currentAccount.address)) {
-            this._Alert.invalidPassword();
-            // Enable send button
-            this.okPressed = false;
-            return;
-        }
+        // Get account private key for preparation or return
+        if (!this._Wallet.decrypt(this.common)) return this.okPressed = false;
 
-
-        // Number of success to prevent archive download if no txes sent
-        this.successTxes = 0;
-
-        // Prepare to chain the promises
-        let chain = this._$q.when();
-
-        //Looping transactions with file array
-        for (let k = 0; k < this.filesToApostille.length; k++) {
-            // Promises chain
-            chain = chain.then(() => {
-                // Build the entity to serialize
-                let entity = this._Transactions.prepareApostilleTransfer(this.common, this.filesToApostille[k]);
-                // Timestamp of the file
-                let timeStamp = helpers.createTimeStamp();
-                // Construct transaction byte array, sign and broadcast it to the network
-                return this._Transactions.serializeAndAnnounceTransactionLoop(entity, this.common, this.filesToApostille[k], k).then((data) => {
-                        let txHash = '';
-                        let txMultisigHash = '';
-                        let url = '';
-                        let owner = this._Wallet.currentAccount.address;
-                        let from = '';
-                        let apostilleName = '';
-                        // Check status
-                        if (data.res.status === 200) {
-                            // If code >= 2, it's an error
-                            if (data.res.data.code >= 2) {
-                                this._$timeout(() => {
-                                    this.pushError(data.res.data.message,  data.tx.filename, data.tx.tags);
-                                });
-                            } else {
-                                // Increment successes
-                                this.successTxes++;
-                                this._Alert.transactionSuccess();
-                                // Transaction hash after tx success
-                                txHash = data.res.data.transactionHash.data;
-                                let ntyData;
-                                if (data.tx.isMultisig) {
-                                    txMultisigHash = data.res.data.innerTransactionHash.data;
-                                    // Create the QR url
-                                    url = this._Wallet.chainLink + txMultisigHash;
-                                    // From multisig
-                                    from = data.tx.multisigAccount.address;
-                                    // Create nty data
-                                    ntyData = Nty.createNotaryData(data.tx.filename, data.tx.tags, data.tx.message, txHash, txMultisigHash, owner, from, data.tx.recipient, data.tx.recipientPrivateKey);
-                                } else {
-                                    // No multisig hash
-                                    txMultisigHash = "";
-                                    // Create the QR url
-                                    url = this._Wallet.chainLink + txHash;
-                                    // From current account
-                                    from = this._Wallet.currentAccount.address;
-                                    // Create nty data
-                                    ntyData = Nty.createNotaryData(data.tx.filename, data.tx.tags, data.tx.message, txHash, txMultisigHash, owner, "", data.tx.recipient, data.tx.recipientPrivateKey);
-                                }
-                               
-                                apostilleName = helpers.getFileName(data.tx.filename) + " -- Apostille TX " + txHash + " -- Date " + helpers.getTimestampShort(timeStamp) + "." + helpers.getExtension(data.tx.filename);
-
-                                if (!this._Wallet.ntyData) { // If not nty data, create and set in local storage
-                                    this._Wallet.setNtyDataInLocalStorage(ntyData);
-                                } else { // Or update current nty data
-                                    let updatedNty = Nty.updateNotaryData(this._Wallet.ntyData, ntyData);
-                                    this._Wallet.setNtyDataInLocalStorage(updatedNty);
-                                }
+        if (this.apostilles.length) {
+            // Chain of promises
+            let chain = (i) => {
+                if (i < this.apostilles.length) {
+                    this._Wallet.transact(this.common, this.apostilles[i].transaction).then((res) => {
+                        this._$timeout(() => {
+                            this.buildApostille(res, this.apostilles[i], i);
+                        });
+                    }, (err) => {
+                        this._$timeout(() => {
+                            this.apostilles[i].reason = err;
+                            this.rejected.push(this.apostilles[i]);
+                            // If last file of the array
+                            if (i === this.apostilles.length - 1) {
+                                // Download archive of files
+                                this.downloadSignedFiles();
+                                // Delete private key in common
+                                this.common.privateKey = '';
+                                // Enable send button
+                                this.okPressed = false;
+                                return;
                             }
-                                this.drawCertificate(data.tx.filename, helpers.convertDateToString(timeStamp), owner, data.tx.tags, from, data.tx.recipient, data.tx.recipientPrivateKey, txHash, data.tx.message, url).then((certificate) => {
-                                    if (data.res.data.code < 2) {
-                                        this._$timeout(() => {
-                                            // Add renamed file to archive
-                                            this.zip.file(apostilleName, (data.tx.fileData).split(",").pop(), {
-                                                base64: true
-                                            });
+                        });
+                    }).then(chain.bind(null, i+1));
+                }
+            }
 
-                                            // Add certificate to archive
-                                            this.zip.file("Certificate of " + helpers.getFileName(data.tx.filename) + " -- TX " + txHash + " -- Date " + helpers.getTimestampShort(timeStamp) + ".png", (certificate).split(",").pop(), {
-                                                base64: true
-                                            });
-                                        });
-                                    }
-                                    // If last file of the array
-                                    if (data.k == this.filesToApostille.length - 1) {
-                                        this._$timeout(() => {
-                                            // Add created or updated nty file to archive
-                                            this.zip.file("Nty-file-" + helpers.getTimestampShort(timeStamp) + ".nty", JSON.stringify(this._Wallet.ntyData));
-                                            // Download archive of files
-                                            this.downloadSignedFiles();
-                                            // Enable send button
-                                            this.okPressed = false;
-                                            // Delete private key in common
-                                            this.common.privateKey = '';
-                                        });
-                                    }
-                                })
-                        }
-                    },
-                    (err) => {
-                        // Delete private key in common
-                        this.common.privateKey = '';
-                        // Enable send button
-                        this.okPressed = false;
-                        this._Alert.transactionError('Failed ' + err.data.error + " " + err.data.message);
-                    });
-            });
+            // Start promises chain
+            chain(0);
         }
     }
 
-    /**
-     * Draw an apostille certificate
-     */
-    drawCertificate(filename, dateCreated, owner, tags, from, to, recipientPrivateKey, txHash, txHex, url) {
-        return new Promise((resolve, reject) => {
-
-            let canvas = document.createElement('canvas');
-            let context = canvas.getContext('2d');
-
-                let imageObj = new Image();
-
-                imageObj.onload = () => {
-                    context.canvas.width = imageObj.width;
-                    context.canvas.height = imageObj.height;
-                    context.drawImage(imageObj, 0, 0, imageObj.width, imageObj.height);
-                    context.font = "38px Roboto Arial sans-serif";
-                    // Top part
-                    context.fillText(filename, 541, 756);
-                    context.fillText(dateCreated, 607, 873);
-                    context.fillText(owner, 458, 989);
-                    context.fillText(tags, 426, 1105);
-
-                    // bottom part
-                    context.font = "30px Roboto Arial sans-serif";
-                    context.fillText(from, 345, 1550);
-                    context.fillText(to, 345, 1690);
-                    context.fillText(recipientPrivateKey, 345, 1846);
-                    context.fillText(txHash, 345, 1994);
-
-                    // Wrap file hash if too long
-                    if (txHex.length > 70) {
-                        let x = 345;
-                        let y = 2137;
-                        let lineHeight = 35;
-                        let lines = txHex.match(/.{1,70}/g)
-                        for (var i = 0; i < lines.length; ++i) {
-                            context.fillText(lines[i], x, y);
-                            y += lineHeight;
-                        }
-                    } else {
-                        context.fillText(txHex, 345, 2137);
-                    }
-
-                    let qr = qrcode(10, 'H');
-                    qr.addData(url);
-                    qr.make();
-                    let tileW = 500  / qr.getModuleCount();
-                    let tileH = 500 / qr.getModuleCount();
-                    for( let row = 0; row < qr.getModuleCount(); row++ ){
-                        for( let col = 0; col < qr.getModuleCount(); col++ ){
-                            context.fillStyle = qr.isDark(row, col) ? "#000000" : "#ffffff";
-                            let w = (Math.ceil((col+1)*tileW) - Math.floor(col*tileW));
-                            let h = (Math.ceil((row+1)*tileW) - Math.floor(row*tileW));
-                            context.fillRect(Math.round(col*tileW)+1687,Math.round(row*tileH)+688, w, h);  
-                        }
-                    }
-                    return resolve(canvas.toDataURL());
-                };
-            imageObj.crossOrigin = "Anonymous";
-            imageObj.src = this.certificateLocation;
-        });
-    }
-
-    // Push in rejected array
-    pushError(message, filename, tags) {
-        this._Alert.transactionError(message);
-        this.rejected.push({
-            "filename": filename,
-            "tags": tags,
-            "reason": message
-        });
-    }
+    //// End methods region ////
 
 }
 

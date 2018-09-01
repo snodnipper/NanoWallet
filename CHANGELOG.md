@@ -1,5 +1,70 @@
 # Changelog
 
+## Version 2.3.2
+
+    - Fix DNS search
+    - Update languages
+    - Minor improvements
+
+## Version 2.3.0
+
+    - Domain Name System module
+    - Import Wallet QR code module
+    - Support voting with Trezor
+    - Minor fixes and improvements
+
+## Version 2.2.0
+
+    - Create and verify signed messages modules
+    - Account transactions explorer
+    - Fix timestamp too far in the future
+    - Updated voting backend
+    - Minor fixes and improvements
+
+## Version 2.1.2
+    
+    - Voting modules
+    - Offline transaction modules
+    - Advanced Apostille
+    - BIP32 refactor
+    - News and transaction confirmation components (WIP)
+    - Invoice module and component
+    - Minor fixes and improvements
+
+## Version 2.0.14
+    
+    - Fix brain wallet login
+
+## Version 2.0.13
+    
+    - Hide Trezor login button in Chrome builds
+
+## Version 2.0.12
+    
+    - Fix harvesting on mainnet
+    - Fix new update notification
+
+## Version 2.0.10
+    
+    - Fix Trezor support
+    - Minor fixes and improvements
+
+## Version 2.0.2
+
+    - Fix password input showing if using Trezor
+    - Shows encryption fee message in fee input
+
+## Version 2.0.0
+
+    - Use the [nem-sdk](https://github.com/QuantumMechanics/NEM-sdk)
+    - Trezor support
+    - ShapeShift support
+    - Step by step signup and account safety protocol
+    - Extra entropy added to simple wallets
+    - Added FAQ
+    - Can show balance and market data in different currencies
+    - Notification on homepage when new update available
+
 ## Version 1.4.13
 
     - Allow sub-namespaces and mosaic names to start with a number
